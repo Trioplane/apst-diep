@@ -9,12 +9,12 @@
 ## Quick setup guide
 1. Install [node.js](https://nodejs.org/en) on your host machine
 2. Install [ws](https://www.npmjs.com/package/ws) after node.js is installed
-    **If you have git installed**
+##    **If you have git installed**
 3. Clone the repository (`git clone "git@github.com:Trioplane/apst-diep.git"`)
 4. Do some git stuff 
-    **else**
+##    **else**
 3. [Download the repository](https://github.com/Trioplane/apst-diep)
-    **Then**
+##    **Then**
 5. Open run.bat
 6. Go to localhost:3000 in your favourite web browser while the command prompt is still open
 7. Play the game
