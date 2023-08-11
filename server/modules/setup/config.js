@@ -1,6 +1,9 @@
 let output = require("../../config.js");
 
-const gamemodes = ["ffa"];
+
+const gamemodes = ["tdm"];
+let mode1 = require(`./gamemodeconfigs/${gamemodes[0]}.js`);
+let mode2 = gamemodes[1] ? require(`./gamemodeconfigs/${gamemodes[1]}.js`) : null;
 
 for (let gamemode of gamemodes) {
     let mode = require(`./gamemodeconfigs/${gamemode}.js`);
@@ -19,7 +22,16 @@ for (let gamemode of gamemodes) {
     }
 }
 
-/*output.gameModeName = gamemode;
+
+
+const nameMap = {
+    tdm: mode1.MODE_NAME ?? "Teams",
+    ffa: "FFA",
+    clanwars: "Clan Wars",
+    train: "Train Wars"
+};
+output.gameModeName = gamemodes.map(x => nameMap[x] || (x[0].toUpperCase() + x.slice(1))).join(' ');
+/*
 if (["Tag", "Domination", "Mothership"].includes(gamemode)) {
     output.gameModeName = `${output.TEAMS} TDM ${gamemode}`;
 }

@@ -79,9 +79,9 @@ function getColor(colorNumber) {
         case 10:
             return color.blue;
         case 11:
-            return color.green;
-        case 12:
             return color.red;
+        case 12:
+            return color.green;
         case 13:
             return color.gold;
         case 14:
@@ -167,12 +167,12 @@ function getZoneColor(cell, real) {
         case "bas2":
         case "bap2":
         case "dom2":
-            return color.green;
+            return color.red;
         case "bas3":
         case "bap3":
         case "dom3":
         case "boss":
-            return color.red;
+            return color.green;
         case "bas4":
         case "bap4":
         case "dom4":

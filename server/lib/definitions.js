@@ -153,7 +153,8 @@ const g = {
     arty: [1.2, 0.7, 1, 0.9, 1, 1, 1, 1.15, 1.1, 1, 1.5, 1, 1],
     mortar: [1.2, 1, 1, 1, 1.1, 1, 1, 0.8, 0.8, 1, 1, 1, 1],
     launcher: [1.5, 1.5, 0.1, 0.72, 1.05, 0.925, 1, 0.9, 1.2, 1.1, 1, 1, 1.5],
-    skim: [1, 0.8, 0.8, 0.9, 1.35, 0.8, 2, 0.3, 0.3, 1, 1, 1, 1.1],
+    // Reload, recoil, shudder (speed variation), size, health, damage, penetration, speed, max speed, range, density, spray (accuracy variation), resist
+    skim: [1, 0.8, 0.8, 0.9, 1.35, 0.8, 2, 1, 0.3, 1, 1, 1, 1.1],
     snake: [0.4, 1, 4, 1, 1.5, 0.9, 1.2, 0.2, 0.35, 1, 3, 6, 0.5],
     sidewind: [1.5, 2, 1, 1, 1.5, 0.9, 1, 0.15, 0.5, 1, 1, 1, 1],
     snakeskin: [0.6, 1, 2, 1, 0.5, 0.5, 1, 1, 0.2, 0.4, 1, 5, 1],
@@ -1356,25 +1357,26 @@ exports.trap = {
 
 
 // MISSILES
-exports.missile = {
+exports.skimmerMissile = {
     PARENT: [exports.bullet],
     LABEL: "Missile",
     INDEPENDENT: true,
+    FACING_TYPE: "fastspin",
     BODY: {
         RANGE: 120,
     },
     GUNS: [
         {
-            POSITION: [14, 6, 1, 0, -2, 130, 0],
+            POSITION: [14, 7.5, 1, 0, 0, 90, 0],
             PROPERTIES: {
                 AUTOFIRE: true,
+                COLOR: this.COLOR,
                 SHOOT_SETTINGS: combineStats([
                     g.basic,
                     g.skim,
                     g.doublereload,
                     g.lowpower,
                     g.muchmorerecoil,
-                    g.morespeed,
                     g.morespeed,
                 ]),
                 TYPE: [
@@ -1387,9 +1389,10 @@ exports.missile = {
             },
         },
         {
-            POSITION: [14, 6, 1, 0, 2, 230, 0],
+            POSITION: [14, 7.5, 1, 0, 0, 270, 0],
             PROPERTIES: {
                 AUTOFIRE: true,
+                COLOR: this.COLOR,
                 SHOOT_SETTINGS: combineStats([
                     g.basic,
                     g.skim,
@@ -3134,24 +3137,25 @@ exports.skimmer = {
     DANGER: 7,
     GUNS: [
         {
-            POSITION: [10, 14, -0.5, 9, 0, 0, 0],
+            POSITION: [10, 12, -0.5, 9, 0, 0, 0],
         },
         {
-            POSITION: [17, 15, 1, 0, 0, 0, 0],
-            PROPERTIES: {
+            POSITION: [16, 13.5, 1, 0, 0, 0, 0],
+            PROPERTIES: {                               // 2 guns each side of bullet
                 SHOOT_SETTINGS: combineStats([
                     g.basic,
                     g.pound,
-                    g.arty,
-                    g.arty,
                     g.skim,
+                    g.morespeed,
+                    g.lessreload,
+                    g.lessreload
                 ]),
-                TYPE: exports.missile,
+                TYPE: exports.skimmerMissile,
                 STAT_CALCULATOR: gunCalcNames.sustained,
             },
         },
     ],
-};
+}; 
 exports.rocketeer = {
     PARENT: [exports.genericTank],
     LABEL: "Rocketeer",
@@ -3162,7 +3166,7 @@ exports.rocketeer = {
     GUNS: [
         {
             POSITION: [10, 12.5, -0.7, 10, 0, 0, 0],
-            PROPERTIES: {
+            PROPERTIES: {                                   // machine gun on bullet
                 SHOOT_SETTINGS: combineStats([
                     g.basic,
                     g.pound,
@@ -3177,7 +3181,8 @@ exports.rocketeer = {
             POSITION: [17, 18, 0.65, 0, 0, 0, 0],
         },
     ],
-};
+}; 
+exports.glider = {}  // 2 guns but slanted
 
 
 // TRAPPER BRANCH

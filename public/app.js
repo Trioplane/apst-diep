@@ -175,9 +175,9 @@ function getColor(colorNumber) {
         case 10:
             return color.blue;
         case 11:
-            return color.green;
-        case 12:
             return color.red;
+        case 12:
+            return color.green;
         case 13:
             return color.gold;
         case 14:
@@ -254,12 +254,12 @@ function getZoneColor(cell, real) {
         case "bas2":
         case "bap2":
         case "dom2":
-            return color.green;
+            return color.red;
         case "bas3":
         case "bap3":
         case "dom3":
         case "boss":
-            return color.red;
+            return color.green;
         case "bas4":
         case "bap4":
         case "dom4":
@@ -1563,14 +1563,14 @@ function drawMinimapAndDebug(spacing, alcoveSize) {
     if (!global.showDebug) y += 14 * 3;
     // Text
     if (global.showDebug) {
-        text.debug[5].draw("APS++", x + len, y - 50 - 5 * 14 - 2, 15, "#B6E57C", "right");
+        text.debug[5].draw("OSA diep.io addon", x + len, y - 50 - 5 * 14 - 2, 15, "#B6E57C", "right");
         text.debug[4].draw("Prediction: " + Math.round(GRAPHDATA) + "ms", x + len, y - 50 - 4 * 14, 10, color.guiwhite, "right");
         text.debug[3].draw(`Bandwidth: ${gui.bandwidth.in} in, ${gui.bandwidth.out} out`, x + len, y - 50 - 3 * 14, 10, color.guiwhite, "right");
         text.debug[2].draw("Update Rate: " + global.metrics.updatetime + "Hz", x + len, y - 50 - 2 * 14, 10, color.guiwhite, "right");
         text.debug[1].draw((100 * gui.fps).toFixed(2) + "% : " + global.metrics.rendertime + " FPS", x + len, y - 50 - 1 * 14, 10, global.metrics.rendertime > 10 ? color.guiwhite : color.orange, "right");
         text.debug[0].draw(global.metrics.latency + " ms - " + global.serverName, x + len, y - 50, 10, color.guiwhite, "right");
     } else {
-        text.debug[2].draw("APS++", x + len, y - 50 - 2 * 14 - 2, 15, "#B6E57C", "right");
+        text.debug[2].draw("OSA diep.io addon", x + len, y - 50 - 2 * 14 - 2, 15, "#B6E57C", "right");
         text.debug[1].draw((100 * gui.fps).toFixed(2) + "% : " + global.metrics.rendertime + " FPS", x + len, y - 50 - 1 * 14, 10, global.metrics.rendertime > 10 ? color.guiwhite : color.orange, "right");
         text.debug[0].draw(global.metrics.latency + " ms : " + global.metrics.updatetime + "Hz", x + len, y - 50, 10, color.guiwhite, "right");
     }
