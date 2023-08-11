@@ -1,8 +1,6 @@
-# Open Source Arras (OSA)
-### Also known as APS++
-
-## OSA-Diep Addon 
-### by trplnr#0 on discord a.k.a *:)
+# Open Source Arras (OSA) Diep.io Addon
+### OSA is also known as APS++
+### by trplnr#0 on discord a.k.a *:
 
 - This addons replaces almost everything with diep tanks, diep polygons and more, basically replace arras with diep. thats it :)
 
