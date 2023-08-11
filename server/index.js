@@ -279,67 +279,18 @@ function spawnWall(loc) {
 
 let timer = Math.round((c.bossSpawnInterval || 8) * 60); // It's in minutes
 const bossSelections = [{
-    bosses: [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteBattleship, Class.eliteSpawner],
+    bosses: [Class.summoner], // add diep bosses
     location: "nest",
     amount: [5, 5, 4, 2, 1],
     nameType: "a",
     chance: 2,
 },{
-    bosses: [Class.roguePalisade],
+    bosses: [Class.summoner],
     location: "norm",
     amount: [4, 1],
     nameType: "castle",
     message: "A strange trembling...",
     chance: 1,
-},{
-    bosses: [Class.summoner, Class.eliteSkimmer, Class.nestKeeper],
-    location: "norm",
-    amount: [2, 2, 1],
-    nameType: "a",
-    message: "A strange trembling...",
-    chance: 1,
-},{
-    bosses: [Class.paladin],
-    location: "norm",
-    amount: [1],
-    nameType: "paladin",
-    message: "The world tremors as the celestials are reborn anew!",
-    chance: 0.1,
-},{
-    bosses: [Class.freyja],
-    location: "norm",
-    amount: [1],
-    nameType: "freyja",
-    message: "The world tremors as the celestials are reborn anew!",
-    chance: 0.1,
-},{
-    bosses: [Class.zaphkiel],
-    location: "norm",
-    amount: [1],
-    nameType: "zaphkiel",
-    message: "The world tremors as the celestials are reborn anew!",
-    chance: 0.1,
-},{
-    bosses: [Class.nyx],
-    location: "norm",
-    amount: [1],
-    nameType: "nyx",
-    message: "The world tremors as the celestials are reborn anew!",
-    chance: 0.1,
-},{
-    bosses: [Class.theia],
-    location: "norm",
-    amount: [1],
-    nameType: "theia",
-    message: "The world tremors as the celestials are reborn anew!",
-    chance: 0.1,
-},{
-    bosses: [Class.alviss],
-    location: "norm",
-    amount: [1],
-    nameType: "alviss",
-    message: "The darkness arrives as the realms are torn apart!",
-    chance: 0.1,
 }];
 
 let spawnBosses = (census) => {

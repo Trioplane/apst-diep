@@ -1,8 +1,8 @@
 class BossRush {
     constructor() {
-        this.bossChoices = [Class.eliteDestroyer, Class.eliteGunner, Class.eliteSprayer, Class.eliteBattleship, Class.eliteSpawner, Class.roguePalisade, Class.eliteSkimmer, Class.summoner, Class.nestKeeper]
-        this.friendlyBossChoices = [Class.roguePalisade, Class.rogueArmada];
-        this.bigFodderChoices = [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap, Class.shinySentryGun];
+        this.bossChoices = [Class.summoner]
+        this.friendlyBossChoices = [Class.summoner];
+        this.bigFodderChoices = [Class.crasher];
         this.smallFodderChoices = [Class.crasher];
         this.waves = this.generateWaves()
         this.waveId = -1
