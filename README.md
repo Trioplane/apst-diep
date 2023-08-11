@@ -1,11 +1,20 @@
-# Open Source Arras
+# Open Source Arras (OSA)
 ### Also known as APS++
+
+## OSA-Diep Addon 
+### by trplnr#0 on discord a.k.a *:)
+
+- This addons replaces almost everything with diep tanks, diep polygons and more, basically replace arras with diep. thats it :)
 
 ## Quick setup guide
 1. Install [node.js](https://nodejs.org/en) on your host machine
 2. Install [ws](https://www.npmjs.com/package/ws) after node.js is installed
-3. [Download the repository](https://github.com/Taureon/aps-plus-plus/archive/refs/heads/main.zip)
-4. Unzip the download
+    **If you have git installed**
+3. Clone the repository (`git clone "git@github.com:Trioplane/apst-diep.git"`)
+4. Do some git stuff 
+    **else**
+3. [Download the repository](https://github.com/Trioplane/apst-diep)
+    **Then**
 5. Open run.bat
 6. Go to localhost:3000 in your favourite web browser while the command prompt is still open
 7. Play the game
@@ -32,6 +41,6 @@ Your private server will be at <https://servername.glitch.me> (replace `serverna
 
 ## Discord Servers
 
-- [Our Discord server](https://discord.gg/kvCAZfUCjy)
+- [OSA (APS++) Discord server](https://discord.gg/kvCAZfUCjy)
 - [Arras.io Discord server](https://discord.gg/arras)
 - [Momentum Studios Discord server](https://discord.gg/RXwCacTrfT)
