@@ -377,7 +377,7 @@ const crasherConfig = {
     chance: 0.9,
     sentryChance: 0.95,
     crashers: [Class.crasher],
-    sentries: [Class.sentryGun, Class.sentrySwarm, Class.sentryTrap],
+    sentries: [Class.crasher],
 };
 function getCrasherType() {
     const seed = Math.random();
@@ -475,7 +475,7 @@ let makenpcs = () => {
             team = -team;
         }
         o.define(Class.bot);
-        o.define(Class.basic);
+        o.define(Class.tank);
         o.refreshBodyAttributes();
         o.isBot = true;
         o.team = team;
@@ -543,36 +543,15 @@ class FoodType {
 }
 const foodTypes = [
     new FoodType("Normal Food",
-        [Class.egg, Class.square, Class.triangle, Class.pentagon, Class.betaPentagon, Class.alphaPentagon],
+        [Class.square, Class.triangle, Class.pentagon, Class.alphaPentagon],
         ["scale", 4], 2000
     ),
     new FoodType("Shiny Food",
-        [Class.gem, Class.shinySquare, Class.shinyTriangle, Class.shinyPentagon, Class.shinyBetaPentagon, Class.shinyAlphaPentagon],
+        [Class.shinySquare, Class.shinyTriangle, Class.shinyPentagon, Class.shinyAlphaPentagon],
         ["scale", 5], 1
     ),
-    new FoodType("Legendary Food",
-        [Class.jewel, Class.legendarySquare, Class.legendaryTriangle, Class.legendaryPentagon, Class.legendaryBetaPentagon, Class.legendaryAlphaPentagon],
-        ["scale", 6], 0.1
-    ),
-    new FoodType("Shadow Food",
-        [Class.shadowSquare, Class.shadowTriangle, Class.shadowPentagon, Class.shadowBetaPentagon, Class.shadowAlphaPentagon],
-        ["scale", 7], 0.005
-    ),
-    new FoodType("Rainbow Food",
-        [Class.rainbowSquare, Class.rainbowTriangle, Class.rainbowPentagon, Class.rainbowBetaPentagon, Class.rainbowAlphaPentagon],
-        ["scale", 8], 0.001
-    ),
-    // Commented out because stats aren't done yet.
-    // new FoodType("Trans Food",
-    //     [Class.egg],
-    //     ["scale", 9], 0.0005
-    // ),
-    new FoodType("Extradimensional Food",
-        [Class.cube, Class.dodecahedron, Class.icosahedron],
-        ["scale", 10], 0.0001
-    ),
     new FoodType("Nest Food", // Commented out because stats aren't done yet.
-        [Class.pentagon, Class.betaPentagon, Class.alphaPentagon, /*Class.alphaHexagon, Class.alphaHeptagon, Class.alphaOctogon, Class.alphaNonagon, Class.alphaDecagon, Class.icosagon*/],
+        [Class.pentagon, Class.alphaPentagon, /*Class.alphaHexagon, Class.alphaHeptagon, Class.alphaOctogon, Class.alphaNonagon, Class.alphaDecagon, Class.icosagon*/],
         ["scale", 4], 1, true
     ),
 ];

@@ -1168,7 +1168,7 @@ let tiles = [],
         }
     },
     tankTree;
-function generateTankTree(rootLabel = "Basic") {
+function generateTankTree(rootLabel = "Tank") {
     let root = global.mockups.find((r) => r.name === rootLabel);
     if (!root) {
         console.log("No root tank");

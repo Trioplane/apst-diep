@@ -7,11 +7,11 @@
     "host": "node standaloneClient/index",
     "build": "node standaloneClient/build minify"
   },
-  "dependencies": {
-    "ws": "^8.13.0"
-  },
   "engines": {
     "node": "16.x"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.13.0"
+  }
 }
