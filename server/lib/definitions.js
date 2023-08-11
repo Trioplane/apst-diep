@@ -2133,8 +2133,9 @@ exports.spreadshot = {
             PROPERTIES: {
                 SHOOT_SETTINGS: combineStats([
                     g.basic,
-                    g.pound,
-                    g.spreadmain,
+                    g.gunner,
+                    g.arty,
+                    g.twin,
                     g.spread,
                 ]),
                 TYPE: exports.bullet,
@@ -3240,7 +3241,7 @@ exports.triTrapper = {
     ],
 };
 exports.autoTrapper = makeAuto(exports.trapper)
-exports.overtrapper = makeOversplit(exports.trapper)
+exports.overtrapper = makeOver(exports.trapper)
 exports.megaTrapper = {
     PARENT: [exports.genericTank],
     LABEL: "Mega Trapper",
