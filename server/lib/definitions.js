@@ -208,9 +208,30 @@ const g = {
     lowpower: [1, 1, 2, 1, 0.5, 0.5, 0.7, 1, 1, 1, 1, 0.5, 0.7],
     notdense: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.1, 1, 1],
     halfrange: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0.5, 1, 1, 1],
-};
 
-// SKILL DEFINITIONS
+    // spread modifiers
+    spread1: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.5, 1],
+    spread2: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1],
+    spread3: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2.5, 1],
+
+    // size modifiers
+
+    tiny: [1, 1, 1, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    smaller: [1, 1, 1, 0.8, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    big: [1, 1, 1, 1.2, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    bigger: [1, 1, 1, 1.5, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+
+    // damage modifiers
+
+    weaker:   [1, 1, 1, 1, 1, 0.5, 1, 1, 1, 1, 1, 1, 1],
+    weak:     [1, 1, 1, 1, 1, 0.8, 1, 1, 1, 1, 1, 1, 1],
+    strong:   [1, 1, 1, 1, 1, 1.2, 1, 1, 1, 1, 1, 1, 1],
+    stronger: [1, 1, 1, 1, 1, 1.5, 1, 1, 1, 1, 1, 1, 1],
+
+    // 1Reload, 2recoil, 3shudder (speed variation), 4size, 5health, 6damage, 7penetration, 8speed, 9max speed, 10range, 11density, 12spray (accuracy variation), 13resist
+}; 
+
+// SKILL DEFINITIONS 
 const dfltskl = 9;
 const smshskl = 12;
 
@@ -1385,7 +1406,7 @@ exports.skimmerMissile = {
                         PERSISTS_AFTER_DEATH: true,
                     },
                 ],
-                STAT_CALCULATOR: gunCalcNames.thruster,
+                STAT_CALCULATOR: gunCalcNames.bullet,
             },
         },
         {
@@ -1408,11 +1429,33 @@ exports.skimmerMissile = {
                         PERSISTS_AFTER_DEATH: true,
                     },
                 ],
-                STAT_CALCULATOR: gunCalcNames.thruster,
+                STAT_CALCULATOR: gunCalcNames.bullet,
             },
         },
     ],
 };
+exports.rocketeerMissile = {
+    PARENT: [exports.bullet],
+    LABEL: 'Missile',
+    INDEPENDENT: true,
+    BODY: {
+        RANGE: 90,
+    },
+    GUNS: [
+        {
+            POSITION: [15, 15, -0.5, 0, 0, 180, 6.5],
+            PROPERTIES: {
+                AUTOFIRE: true,
+                SHOOT_SETTINGS: combineStats([g.basic, g.weaker, g.morereload, g.morereload, g.doublereload, g.morereload, g.spread3, g.spread3, g.spread3, g.tiny]),
+                TYPE: [exports.bullet, {
+                    PERSISTS_AFTER_DEATH: true,
+                }],
+                STAT_CALCULATOR: gunCalcNames.thruster,
+            },
+        }
+    ]
+}
+
 // TURRETS
 exports.turretParent = {
     PARENT: [exports.genericTank],
@@ -3156,6 +3199,8 @@ exports.skimmer = {
         },
     ],
 }; 
+
+// pin1
 exports.rocketeer = {
     PARENT: [exports.genericTank],
     LABEL: "Rocketeer",
@@ -3165,7 +3210,7 @@ exports.rocketeer = {
     DANGER: 7,
     GUNS: [
         {
-            POSITION: [10, 12.5, -0.7, 10, 0, 0, 0],
+            POSITION: [9, 11.5, -0.7, 10, 0, 0, 0],
             PROPERTIES: {                                   // machine gun on bullet
                 SHOOT_SETTINGS: combineStats([
                     g.basic,
@@ -3178,7 +3223,7 @@ exports.rocketeer = {
             },
         },
         {
-            POSITION: [17, 18, 0.65, 0, 0, 0, 0],
+            POSITION: [16, 17, 0.65, 0, 0, 0, 0],
         },
     ],
 }; 
@@ -3988,7 +4033,7 @@ exports.dominators.UPGRADES_TIER_0 = [exports.dominator, exports.destroyerDomina
         exports.machineGun.UPGRADES_TIER_2 = [exports.destroyer, exports.gunner];
                 exports.machineGun.UPGRADES_TIER_3 = [exports.sprayer]
                 exports.gunner.UPGRADES_TIER_3 = [exports.autoGunner, exports.gunnerTrapper, exports.streamliner];
-                exports.destroyer.UPGRADES_TIER_3 = [exports.annihilator, exports.hybrid, exports.skimmer] // exports.rocketeer exports.glider
+                exports.destroyer.UPGRADES_TIER_3 = [exports.annihilator, exports.hybrid, exports.skimmer, exports.rocketeer] // exports.rocketeer exports.glider
 
         exports.flankGuard.UPGRADES_TIER_2 = [exports.triAngle, exports.quadTank, exports.doubleTwin, exports.auto3];
                 exports.triAngle.UPGRADES_TIER_3 = [exports.booster, exports.fighter];
