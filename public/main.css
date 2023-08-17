@@ -8,7 +8,9 @@
 }
 
 #mainBody {
-    background-color: #484848;
+    background-image: url('https://diep.io/3faeef706382726fef1b.jpg');
+    background-position: center;
+    background-size: cover;
 }
 
 ::-webkit-scrollbar {
@@ -143,7 +145,7 @@ input.checkbox {
     vertical-align: bottom;
     position: relative;
     top: -2px;
-    *overflow: hidden;
+    overflow: hidden;
 }
 
 #playerNameInput {
@@ -206,7 +208,9 @@ div {
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    background-color: #DDE6EB;
+    background-color: transparent;
+    backdrop-filter: blur(5px);
+    outline: solid #000000 2.5px;
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -224,6 +228,16 @@ div {
     overflow: hidden;
     display: inline-block;
     vertical-align: text-top;
+    text-align: center;
+    color: white;
+    
+    > a {
+        color: white;
+    }
+
+    > a:visited {
+        color: rgb(214, 214, 214);
+    }
 }
 
 .sliderHolder {
@@ -279,6 +293,15 @@ update {
     font-size: x-large;
     font-weight: bold;
     text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.titleSpan::before {
+    content: 'Changelog';
+    position: absolute;
+    z-index: -1;
+    -webkit-text-stroke: #000000 5px;
 }
 
 .shrinkable {
@@ -288,6 +311,8 @@ update {
 
 #patchNotes {
     max-width: 330px;
+    background-color: transparent;
+    text-align: left;
     height: calc(100% - 100px);
     padding: 5px 20px 10px;
     overflow: hidden auto;
@@ -295,17 +320,81 @@ update {
     scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.15);
 }
 
-#patchNotes ul {
-    padding-left: 15px;
-    margin-left: 10px;
+/* CHANGE LOGS */
+
+#patchNotes div {
+    border: #ccd5da solid 2.5px;
+    border-radius: 5px;
+    padding: 1em;    
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1em;
+    
+    > p {
+        color: white;
+    }
+
+    > .changelogTitle {
+        margin: 0;
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    > .changelogTitle::before {
+        content: attr(data-text);
+        position: absolute;
+        z-index: -1;
+        -webkit-text-stroke: #000000 5px;
+    }
+
+    > .changelogTagline {
+        margin: 0;
+    }   
+
+    > .changelogTagline::before {
+        content: attr(data-text);
+        position: absolute;
+        z-index: -1;
+        -webkit-text-stroke: #000000 2.5px;
+    }
+
+    > .changelogDate {
+        margin: 0;
+        opacity: 0.5;
+        font-style: italic;
+    }
+
+    > .changelogDate::before {
+        content: attr(data-text);
+        position: absolute;
+        z-index: -1;
+        -webkit-text-stroke: #000000 2.5px;
+    }
+
+    > ul li[warning] {
+        color: goldenrod
+    }
+
+    > ul li[major] {
+        outline: gold solid 1px;
+        border-radius: 5px;
+        padding: 0.5em;
+        margin-block: 0.5em;
+    }
+
+    > ul li[important], > ul li[danger] {
+        color: tomato
+    }
 }
+
+/* ----------------- */
 
 .shadowScroll {
     overflow-y: scroll;
     background:
         /* Shadow covers */
-        linear-gradient(#dde6eb 30%, rgba(255, 255, 255, 0)),
-        linear-gradient(rgba(255, 255, 255, 0), #dde6eb 70%) 0 100%,
+        linear-gradient(#6E6C80, rgba(255, 255, 255, 0)),
+        linear-gradient(rgba(255, 255, 255, 0), #6E6C80) 0 100%,
         /* Shadows */
         radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0)),
         radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0)) 0 100%;
@@ -315,34 +404,60 @@ update {
     background-attachment: local, local, scroll, scroll;
 }
 
+@keyframes buttonHover {
+    100% {
+        transform: skewX(-10deg) translateX(500px);
+    }
+}
+
 #startButton {
     position: relative;
     margin: auto;
     width: 100%;
     height: 40px;
     box-sizing: border-box;
-    font-size: larger;
-    color: white;
     text-align: center;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-    background: #B9E87E;
+    background: #B4FF8E;
+    overflow: hidden;
     border: 0;
-    border-bottom: 2px solid #8ABC3F;
+    outline: 3.5px solid #444444;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #8ABC3F;
-    box-shadow: inset 0 -2px #8ABC3F;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
+    box-shadow: inset 0 -20px #90CC72;
+    border-radius: 0.5px;
 }
 
-#startButton:active,
-#startButton:hover {
-    top: 1px;
-    background: #8ABC3F;
-    outline: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
+#startButton > p {
+    position: absolute;
+    color: white;
+    font-weight: bold;
+    font-size: larger;
+    text-align: center;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-30%);
+    z-index: 1;
+}
+
+#startButton > p::before {
+    content: 'Play';
+    position: absolute;
+    z-index: -1;
+    -webkit-text-stroke: #000000 4px;
+}
+
+#startButton::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    top: 0;
+    left: 0;
+    transform: skewX(-20deg) translateX(-20px);
+}
+
+#startButton:hover::before {
+    animation: buttonHover 0.5s linear forwards;
 }
 
 #bottomHolder {
@@ -497,6 +612,24 @@ a.link {
     bottom: 0;
     width: 100%;
     height: 100%;
+}
+
+.gameIcon {
+    max-width: 80%;
+    height: auto;
+}
+
+#gameName {
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+
+#gameName::before {
+    content: 'Diep APST++';
+    position: absolute;
+    -webkit-text-stroke: #000000 5px;
+    z-index: -1;
 }
 
 input [type="image"]:focus {

@@ -1439,7 +1439,7 @@ exports.rocketeerMissile = {
     LABEL: 'Missile',
     INDEPENDENT: true,
     BODY: {
-        RANGE: 90,
+        RANGE: 85,
     },
     GUNS: [
         {

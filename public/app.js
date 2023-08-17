@@ -7,16 +7,52 @@ import * as socketStuff from "./lib/socketInit.js";
 (async function (util, global, config, Canvas, color, socketStuff) {
 
 let { socketInit, gui, leaderboard, minimap, moveCompensation, lag, getNow } = socketStuff;
-fetch("changelog.md", { cache: "no-cache" })
-.then((response) => response.text())
-.then((response) => {
-    const changelogs = response.split("\n\n").map((changelog) => changelog.split("\n"));
-    console.log(changelogs);
-    changelogs.forEach((changelog) => {
-        changelog[0] = changelog[0].split(":").map((line) => line.trim());
-        document.getElementById("patchNotes").innerHTML += `<div><b>${changelog[0][0].slice(1).trim()}</b>: ${changelog[0].slice(1).join(":") || "Update lol"}<ul>${changelog.slice(1).map((line) => `<li>${line.slice(1).trim()}</li>`).join("")}</ul><hr></div>`;
-    });
-});
+// fetch("changelog.md", { cache: "no-cache" })
+// .then((response) => response.text())
+// .then((response) => {
+//     const changelogs = response.split("\n\n").map((changelog) => changelog.split("\n"));
+//     console.log(changelogs);
+//     changelogs.forEach((changelog) => {
+//         changelog[0] = changelog[0].split(":").map((line) => line.trim());
+//         document.getElementById("patchNotes").innerHTML += `<div><b>${changelog[0][0].slice(1).trim()}</b>: ${changelog[0].slice(1).join(":") || ""}<ul>${changelog.slice(1).map((line) => `<li>${line.slice(1).trim()}</li>`).join("")}</ul><hr></div>`;
+//     });
+// });
+
+function getChangelogHeaders(parsed_html) {
+    const changelogHeaders = {     
+        changelogTitles: parsed_html.querySelectorAll('.changelogTitle'),
+        changelogTaglines: parsed_html.querySelectorAll('.changelogTagline'),
+        changelogDates: parsed_html.querySelectorAll('.changelogDate')
+    }
+    return changelogHeaders
+}
+
+async function getChangelogs() {
+    const patchNotes = document.querySelector("#patchNotes")
+    try {
+        const parser = new DOMParser()
+
+        const ChangelogsHTMLFile = await fetch("changelogs.html", { cache: "no-cache" })
+        const RawHTMLString = await ChangelogsHTMLFile.text()
+        const ParsedHTML = parser.parseFromString(RawHTMLString, "text/html")
+
+        const { changelogTitles, changelogTaglines, changelogDates } = getChangelogHeaders(ParsedHTML)
+        const headers = [changelogTitles, changelogTaglines, changelogDates]
+        for (let i = 0; i < 3; i++) {
+            headers[i].forEach((element) => {
+                element.dataset.text = element.textContent
+            })
+        }
+        patchNotes.innerHTML += ParsedHTML.documentElement.innerHTML
+    } catch (error) {
+        patchNotes.innerHTML = ""
+        patchNotes.innerHTML += "<p>An error occured while trying to fetch 'changelogs.html'</p>"
+        patchNotes.innerHTML += `<p>${error}</p>`
+    }
+}  
+
+getChangelogs()
+
 class Animation {
     constructor(start, to, smoothness = 0.05) {
         this.start = start;
