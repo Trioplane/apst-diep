@@ -277,15 +277,15 @@ function spawnWall(loc) {
     o.life();
 }
 
-let timer = Math.round((c.bossSpawnInterval || 8) * 60); // It's in minutes
+let timer = Math.round((c.bossSpawnInterval || 8) * 10); // It's in minutes
 const bossSelections = [{
-    bosses: [Class.summoner], // add diep bosses
+    bosses: [Class.summoner, Class.defender], // add diep bosses
     location: "nest",
     amount: [5, 5, 4, 2, 1],
     nameType: "a",
     chance: 2,
 },{
-    bosses: [Class.summoner],
+    bosses: [Class.summoner, Class.defender],
     location: "norm",
     amount: [4, 1],
     nameType: "castle",

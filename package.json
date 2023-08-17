@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node --optimize-for-size --no-lazy --gc_interval=120 server/index",
     "host": "node standaloneClient/index",
-    "build": "node standaloneClient/build minify"
+    "build": "node standaloneClient/build minify",
+    "localtunnel": "lt --port 3000 --subdomain apstdiep",
+    "hostOnline": "start npm run start && start npm run localtunnel"
   },
   "engines": {
     "node": "16.x"

@@ -1,5 +1,5 @@
 module.exports = {
-    host: "localhost:3000",
+    host: "localhost:3000", // change to apstdiep.loca.lt when hosting online
     servesStatic: true,
     port: 3000,
     networkUpdateFactor: 24,

@@ -3497,6 +3497,7 @@ exports.miniboss = {
 
 exports.summoner = {
     PARENT: [exports.miniboss],
+    NAME:  "Summoner",
     LABEL: "Summoner",
     DANGER: 8,
     SHAPE: 4,
@@ -3558,6 +3559,51 @@ exports.summoner = {
         },
     ],
 };
+
+exports.defender = {
+    PARENT: [exports.miniboss],
+    NAME: "Defender",
+    LABEL: "Defender",
+    DANGER: 8,
+    SHAPE: 3,
+    COLOR: exports.triangle.COLOR,
+    SIZE: 20,
+    FACING_TYPE: "autospin",
+    VALUE: 3e5,
+    BODY: {
+        FOV: 0.5,
+        SPEED: 0.1 * base.SPEED,
+        HEALTH: 7 * base.HEALTH,
+        DAMAGE: 2.6 * base.DAMAGE,
+    },
+    GUNS: [],
+    TURRETS: []
+}
+
+{
+    let angle = 360/6
+    for (let i = 0; i<6; i++) {
+        if (i % 2) {
+            exports.defender.GUNS.push({
+                POSITION: [12, 6, 1, 0, 0, angle * i, 0],
+            },
+            {
+                POSITION: [2.5, 6, 1.7, 12, 0, angle * i, 0],
+                PROPERTIES: {
+                    SHOOT_SETTINGS: combineStats([g.basic, g.tiny, g.small, g.weak, g.lessreload]),
+                    AUTOFIRE: true,
+                    TYPE: exports.trap,
+                    STAT_CALCULATOR: gunCalcNames.trap,
+                },
+            })  
+        } else {
+            exports.defender.TURRETS.push({
+                POSITION: [4.5, 8.5, 0, angle * i, 180, 1],
+                TYPE: [exports.autoTurret]
+            })
+        }
+    }
+}
 
 // DOMINATORS
 exports.dominationBody = {
@@ -4011,7 +4057,7 @@ exports.gameModMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.tea
 exports.betaTesterMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.teams];
 
 // MISCELLANEOUS
-exports.miscEntities.UPGRADES_TIER_0 = [exports.dominators, exports.baseProtector, exports.mothership, exports.arenaCloser];
+exports.miscEntities.UPGRADES_TIER_0 = [exports.dominators, exports.baseProtector, exports.mothership, exports.arenaCloser, exports.summoner, exports.defender];
 exports.dominators.UPGRADES_TIER_0 = [exports.dominator, exports.destroyerDominator, exports.gunnerDominator, exports.trapperDominator];
 
 // TANK UPGRADE PATHS
