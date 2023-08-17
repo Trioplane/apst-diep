@@ -1,6 +1,6 @@
 // you can edit this!
 let teams = 2,
-  bots_per_team = 5;
+  bots_per_team = 10;
 
 let modeName = "1TDM";
 
