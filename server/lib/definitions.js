@@ -1455,7 +1455,38 @@ exports.rocketeerMissile = {
         }
     ]
 }
-
+exports.gliderMissile = {
+    PARENT: [exports.bullet],
+    LABEL: "Missile",
+    INDEPENDENT: true,
+    BODY: {
+        RANGE: 115,
+    },
+    GUNS: [
+        {
+            POSITION: [6, 7.5, 1, 8, -1.5, 180 + 40, 0],
+            PROPERTIES: {
+                AUTOFIRE: true,
+                SHOOT_SETTINGS: combineStats([g.basic, g.morereload, g.lowpower]),
+                TYPE: [exports.bullet, {
+                    PERSISTS_AFTER_DEATH: true,
+                }],
+                STAT_CALCULATOR: gunCalcNames.thruster
+            }
+        },
+        {
+            POSITION: [6, 7.5, 1, 8, 1.5, 180 - 40, 0],
+            PROPERTIES: {
+                AUTOFIRE: true,
+                SHOOT_SETTINGS: combineStats([g.basic, g.morereload, g.lowpower]),
+                TYPE: [exports.bullet, {
+                    PERSISTS_AFTER_DEATH: true,
+                }],
+                STAT_CALCULATOR: gunCalcNames.thruster
+            }
+        }
+    ]
+}
 // TURRETS
 exports.turretParent = {
     PARENT: [exports.genericTank],
@@ -3228,7 +3259,31 @@ exports.rocketeer = {
     ],
 }; 
 exports.glider = {
-
+    PARENT: [exports.genericTank],
+    LABEL: "Glider",
+    GUNS: [
+        {
+            POSITION: [3, 6, 1, 16, 0, 0, 0]
+        },
+        {
+            POSITION: [16.5, 19.5, 0.55, 0, 0, 0, 0],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([
+                    g.basic,
+                    g.pound,
+                    g.launcher,
+                    g.slow,
+                    g.smaller,
+                    g.slow,
+                    g.slow,
+                    g.lessreload,
+                    g.lessreload
+                ]),
+                TYPE: exports.gliderMissile,
+                STAT_CALCULATOR: gunCalcNames.sustained,
+            }
+        }
+    ]
 }  // 2 guns but slanted
 
 
@@ -4221,7 +4276,7 @@ exports.miscbosses.UPGRADES_TIER_0 = [exports.omega_summoner, exports.alpha_defe
         exports.machineGun.UPGRADES_TIER_2 = [exports.destroyer, exports.gunner];
                 exports.machineGun.UPGRADES_TIER_3 = [exports.sprayer]
                 exports.gunner.UPGRADES_TIER_3 = [exports.autoGunner, exports.gunnerTrapper, exports.streamliner];
-                exports.destroyer.UPGRADES_TIER_3 = [exports.annihilator, exports.hybrid, exports.skimmer, exports.rocketeer] // exports.rocketeer exports.glider
+                exports.destroyer.UPGRADES_TIER_3 = [exports.annihilator, exports.hybrid, exports.skimmer, exports.rocketeer, exports.glider] // exports.rocketeer exports.glider
 
         exports.flankGuard.UPGRADES_TIER_2 = [exports.triAngle, exports.quadTank, exports.doubleTwin, exports.auto3];
                 exports.triAngle.UPGRADES_TIER_3 = [exports.booster, exports.fighter];

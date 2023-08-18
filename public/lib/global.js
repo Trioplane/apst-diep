@@ -74,12 +74,17 @@ const global = {
     KEY_SPIN_LOCK: 88,
 
     KEY_LEVEL_UP: 78,
-    KEY_FUCK_YOU: 80,
     KEY_CLASS_TREE: 84,
     KEY_MAX_STAT: 77,
     KEY_SUICIDE: 79,
-    KEY_SOMETHING: 186,
-
+    
+    // DEVELOPER
+    KEY_FUCK_YOU: 80,
+    KEY_SPECTATE: 186,
+    KEY_GROW: 219,
+    KEY_SHRINK: 221,
+    KEY_TELEPORT: 74,
+    
     KEY_UPGRADE_ATK: 49,
     KEY_UPGRADE_HTL: 50,
     KEY_UPGRADE_SPD: 51,
@@ -135,6 +140,7 @@ const global = {
     statHover: false,
     upgradeHover: false,
     statMaxing: false,
+    toggleCommand: false,
     metrics: {
         latency: 0,
         lag: 0,

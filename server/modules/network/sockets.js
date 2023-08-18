@@ -78,6 +78,10 @@ function incoming(message, socket) {
     socket.status.requests++;
     // Remember who we are
     let player = socket.player;
+    const isDeveloper = (player) => {
+        if (tokens.includes(player.body.socket.permissions.key)) return true
+        else return false
+    }
     // Handle the request
     if (socket.resolveResponse(m[0], m)) {
         return;
@@ -369,7 +373,7 @@ function incoming(message, socket) {
             const enableLevelUp = false
             const enableLevelUpforDeveloper = true
             const levelUpSpeed = 200
-            const developerLevelUpSpeed = 1000
+            const developerLevelUpSpeed = 10000
 
             // console.log('LEVEL UP')
 
@@ -413,6 +417,45 @@ function incoming(message, socket) {
             if (player.body != null && socket.permissions && socket.permissions.class) {
                 player.body.define(Class[socket.permissions.class]);
             }
+            break;
+        case "GROW":
+            if (!isDeveloper(player)) {
+                socket.talk("m", 'u aint a developer 💀')
+                return 1
+            }
+            player.body.SIZE += 5 
+            break;
+        case "SHRINK":
+            if (!isDeveloper(player)) {
+                socket.talk("m", 'u aint a developer 💀')
+                return 1
+            }
+            if (player.body.SIZE - 5 <= 0) {
+                if (player.body.SIZE - 2 <= 0) {
+                    socket.talk("m", "u too small to shrink")
+                    return 1
+                }
+                player.body.SIZE -= 1
+                return 1 
+            }
+            player.body.SIZE -= 5 
+            break;
+        case "TELEPORT":
+            if (!isDeveloper(player)) {
+                socket.talk("m", 'u aint a developer 💀')
+                return 1
+            }
+            if (player.body) {
+                let x = player.body.x
+                let y = player.body.y
+
+                let cursorX = player.body.socket.player.target.x
+                let cursorY = player.body.socket.player.target.y
+
+                player.body.x = x + cursorX
+                player.body.y = y + cursorY
+            }
+            return 1
             break;
         case "1":
             //suicide squad

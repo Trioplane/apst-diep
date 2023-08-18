@@ -24,59 +24,69 @@ class Canvas {
         global.canvas = this;
     }
     keyboardDown(event) {
-        switch (event.keyCode) {
-            case 13:
-                if (global.died) this.parent.socket.talk('s', global.playerName, 0, 1 * config.game.autoLevelUp);
-                global.died = false;
-                break; // Enter to respawn
-            case global.KEY_UP_ARROW:
-                if (!global.died && global.showTree) return global.realScrollX = 0;
-            case global.KEY_UP:
-                this.parent.socket.cmd.set(0, true);
-                break;
-            case global.KEY_DOWN_ARROW:
-                if (!global.died && global.showTree) return global.realScrollX = 1;
-            case global.KEY_DOWN:
-                this.parent.socket.cmd.set(1, true);
-                break;
-            case global.KEY_LEFT_ARROW:
-                if (!global.died && global.showTree) return global.realScrollX -= global.realScrollX <= 0 ? 0 : .01;
-            case global.KEY_LEFT:
-                this.parent.socket.cmd.set(2, true);
-                break;
-            case global.KEY_RIGHT_ARROW:
-                if (!global.died && global.showTree) return global.realScrollX += global.realScrollX >= 1 ? 0 : .01;
-            case global.KEY_RIGHT:
-                this.parent.socket.cmd.set(3, true);
-                break;
-            case global.KEY_MOUSE_0:
-                this.parent.socket.cmd.set(4, true);
-                break;
-            case global.KEY_MOUSE_1:
-                this.parent.socket.cmd.set(5, true);
-                break;
-            case global.KEY_MOUSE_2:
-                this.parent.socket.cmd.set(6, true);
-                break;
-            case global.KEY_LEVEL_UP:
-                this.parent.socket.talk('L');
-                break;
-            case global.KEY_FUCK_YOU:
-                this.parent.socket.talk('0');
-                break;
-            case global.KEY_BECOME:
-                this.parent.socket.talk('H');
-                break;
-            case global.KEY_MAX_STAT:
-                global.statMaxing = true;
-                break;
-            case global.KEY_SUICIDE:
-                this.parent.socket.talk('1');
-                break;
-            case global.KEY_SOMETHING:
-                this.parent.socket.talk('A');
-                break;
-        }
+            switch (event.keyCode) {
+                case 13:
+                    if (global.died) this.parent.socket.talk('s', global.playerName, 0, 1 * config.game.autoLevelUp);
+                    global.died = false;
+                    break; // Enter to respawn
+                case global.KEY_UP_ARROW:
+                    if (!global.died && global.showTree) return global.realScrollX = 0;
+                case global.KEY_UP:
+                    this.parent.socket.cmd.set(0, true);
+                    break;
+                case global.KEY_DOWN_ARROW:
+                    if (!global.died && global.showTree) return global.realScrollX = 1;
+                case global.KEY_DOWN:
+                    this.parent.socket.cmd.set(1, true);
+                    break;
+                case global.KEY_LEFT_ARROW:
+                    if (!global.died && global.showTree) return global.realScrollX -= global.realScrollX <= 0 ? 0 : .01;
+                case global.KEY_LEFT:
+                    this.parent.socket.cmd.set(2, true);
+                    break;
+                case global.KEY_RIGHT_ARROW:
+                    if (!global.died && global.showTree) return global.realScrollX += global.realScrollX >= 1 ? 0 : .01;
+                case global.KEY_RIGHT:
+                    this.parent.socket.cmd.set(3, true);
+                    break;
+                case global.KEY_MOUSE_0:
+                    this.parent.socket.cmd.set(4, true);
+                    break;
+                case global.KEY_MOUSE_1:
+                    this.parent.socket.cmd.set(5, true);
+                    break;
+                case global.KEY_MOUSE_2:
+                    this.parent.socket.cmd.set(6, true);
+                    break;
+                case global.KEY_LEVEL_UP:
+                    this.parent.socket.talk('L');
+                    break;
+                case global.KEY_BECOME:
+                    this.parent.socket.talk('H');
+                    break;
+                case global.KEY_FUCK_YOU:
+                    this.parent.socket.talk('0');
+                    break;
+                case global.KEY_SUICIDE:
+                    this.parent.socket.talk('1');
+                    break;
+                case global.KEY_SPECTATE:
+                    this.parent.socket.talk('A');
+                    break;
+                case global.KEY_GROW:
+                    this.parent.socket.talk('GROW');
+                    break;
+                case global.KEY_SHRINK:
+                    this.parent.socket.talk('SHRINK');
+                    break;
+                case global.KEY_TELEPORT:
+                    this.parent.socket.talk('TELEPORT')
+                    break;
+            }
+        // commands
+
+                
+
         if (!event.repeat) {
             switch (event.keyCode) {
                 case global.KEY_AUTO_SPIN:
@@ -109,6 +119,10 @@ class Canvas {
                     break;
             }
             if (global.canSkill) {
+                switch (event.keyCode) {
+                    case global.KEY_MAX_STAT:
+                    global.statMaxing = true;
+                }
                 let skill = [
                     global.KEY_UPGRADE_ATK, global.KEY_UPGRADE_HTL, global.KEY_UPGRADE_SPD,
                     global.KEY_UPGRADE_STR, global.KEY_UPGRADE_PEN, global.KEY_UPGRADE_DAM,
