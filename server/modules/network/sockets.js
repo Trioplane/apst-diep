@@ -4,9 +4,12 @@ let permissionsDict = {},
     players = [],
     disconnections = [];
 
+let tokens = []
 for (let entry of require("../../permissions.js")) {
     permissionsDict[entry.key] = entry;
+    tokens.push(entry.key)
 }
+
 
 // Closing the socket
 function close(socket) {
@@ -118,6 +121,7 @@ function incoming(message, socket) {
             let name = m[0].replace(c.BANNED_CHARACTERS_REGEX, "");
             let needsRoom = m[1];
             let autoLVLup = m[2];
+            console.log(m)
             // Verify it
             if (typeof name != "string") {
                 socket.kick("Bad spawn request name.");
@@ -149,8 +153,7 @@ function incoming(message, socket) {
             }
             socket.party = m[1];
             socket.player = socket.spawn(name);
-
-            if (autoLVLup) {
+            if (autoLVLup && tokens.includes(socket.player.body.socket.permissions?.key ?? "")) {
                 while (socket.player.body.skill.level < c.SKILL_CHEAT_CAP) {
                     socket.player.body.skill.score += socket.player.body.skill.levelScore;
                     socket.player.body.skill.maintain();
@@ -361,16 +364,44 @@ function incoming(message, socket) {
                 socket.kick("Ill-sized level-up request.");
                 return 1;
             }
-            // cheatingbois
-            if (player.body == null) break;
-            if (player.body.underControl) return;
-            if (player.body.skill.level < (socket.permissions && socket.permissions.class
-                ? 1000
-                : c.SKILL_CHEAT_CAP)) {
-                    player.body.skill.score += player.body.skill.levelScore;
+
+            // change settings here
+            const enableLevelUp = false
+            const enableLevelUpforDeveloper = true
+            const levelUpSpeed = 200
+            const developerLevelUpSpeed = 1000
+
+            // console.log('LEVEL UP')
+
+            if (enableLevelUp) {
+                if (!tokens.includes(player.socket.permissions.key)) {
+                    if (player.body == null) break;
+                    if (player.body.underControl) return;
+                    if (player.body.skill.level < (socket.permissions && socket.permissions.class ? 1000 : c.SKILL_CHEAT_CAP)) {
+                        player.body.skill.score += levelUpSpeed;
+                        player.body.skill.maintain();
+                        player.body.refreshBodyAttributes();
+                    }
+                } else {
+                    if (player.body == null) break;
+                    if (player.body.underControl) return;
+                    if (player.body.skill.level < (socket.permissions && socket.permissions.class ? 1000 : c.SKILL_CHEAT_CAP)) {
+                        player.body.skill.score += developerLevelUpSpeed;
+                        player.body.skill.maintain();
+                        player.body.refreshBodyAttributes();
+                    }
+                }   
+            } else {
+                if (!enableLevelUpforDeveloper) return
+                if (!tokens.includes(player.socket.permissions.key)) return
+                if (player.body == null) break;
+                if (player.body.underControl) return;
+                if (player.body.skill.level < (socket.permissions && socket.permissions.class ? 1000 : c.SKILL_CHEAT_CAP)) {
+                    player.body.skill.score += developerLevelUpSpeed;
                     player.body.skill.maintain();
                     player.body.refreshBodyAttributes();
-            }
+                } 
+            }        
             break;
         case "0":
             // testbed cheat
@@ -396,13 +427,22 @@ function incoming(message, socket) {
             }
             break;
         case "A":
-            if (player.body != null) return 1;
             let possible = []
+            if (player.body) {
+                // im alive not spectating yet
+                if (!tokens.includes(player.body.socket.permissions.key)) {
+                    socket.talk("Token is required for spectating")
+                    return 1
+                } else if (player.body.label != 'Spectator') {
+                    socket.talk("m", 'Current Tank is not Spectator')
+                    return 1
+                } 
+            }  
             for (let i = 0; i < entities.length; i++) {
                 let entry = entities[i];
                 if (entry.type === "miniboss") possible.push(entry);
                 if (entry.isDominator || entry.isMothership || entry.isArenaCloser) possible.push(entry);
-                if (c.MODE === "tdm" && -socket.rememberedTeam === entry.team && entry.type === "tank" && entry.bond == null) possible.push(entry);
+                if (entry.type === "tank") possible.push(entry);
             }
             if (!possible.length) {
                 socket.talk("m", "There are no entities to spectate!");
@@ -413,6 +453,50 @@ function incoming(message, socket) {
                 entity = ran.choose(possible);
             } while (entity === socket.spectateEntity && possible.length > 1);
             socket.spectateEntity = entity;
+            let camera = socket.camera
+            if (player.body != null) {
+                // But I just died...
+
+                if (player.body) {
+                    socket.status.deceased = true;
+                    // Let the client know it died
+                    socket.talk("G");
+                    // Remove the body
+                    player.body.kill()
+                    player.body = null;
+                }
+                // I live!
+                else if (player.body.photo) {
+                    // Update camera position and motion
+                    camera.x = player.body.cameraOverrideX === null ? player.body.photo.x : player.body.cameraOverrideX;
+                    camera.y = player.body.cameraOverrideY === null ? player.body.photo.y : player.body.cameraOverrideY;
+                    camera.vx = player.body.photo.vx;
+                    camera.vy = player.body.photo.vy;
+                    // Get what we should be able to see
+                    setFov = player.body.fov;
+                    // Get our body id
+                    player.viewId = player.body.id;
+                }
+            }
+            if (player.body == null) {
+                // u dead bro
+                setFov = 2000;
+                if (socket.spectateEntity != null) {
+                    if (socket.spectateEntity) {
+                        camera.x = socket.spectateEntity.x;
+                        camera.y = socket.spectateEntity.y;
+                    }
+                }
+            }
+            // Smoothly transition view size
+            camera.fov += Math.max(
+                (setFov - camera.fov) / 30,
+                setFov - camera.fov
+            );
+            // Update my stuff
+            x = camera.x;
+            y = camera.y;
+            fov = camera.fov;
             socket.talk("m", `You are now spectating ${entity.name.length ? entity.name : "An unnamed player"}! (${entity.label})`);
             break;
         case "H":

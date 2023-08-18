@@ -8,6 +8,7 @@ let Class = (function () {
     return def;
 })();
 
+
 const skcnv = {
     rld: 0,
     pen: 1,
@@ -130,7 +131,7 @@ class Skill {
     maintain() {
         if (this.score - this.deduction >= this.levelScore) {
             this.deduction += this.levelScore;
-            this.level += 1;
+            this.level += 1 // thing that controls how much level when u click n
             this.points += this.levelPoints;
             if (this.level < c.SKILL_CAP) {
                 if (this.level % c.TIER_MULTIPLIER && this.level <= c.MAX_UPGRADE_TIER) {

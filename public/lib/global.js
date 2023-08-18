@@ -78,6 +78,7 @@ const global = {
     KEY_CLASS_TREE: 84,
     KEY_MAX_STAT: 77,
     KEY_SUICIDE: 79,
+    KEY_SOMETHING: 186,
 
     KEY_UPGRADE_ATK: 49,
     KEY_UPGRADE_HTL: 50,

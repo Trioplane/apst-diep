@@ -73,6 +73,9 @@ class Canvas {
             case global.KEY_SUICIDE:
                 this.parent.socket.talk('1');
                 break;
+            case global.KEY_SOMETHING:
+                this.parent.socket.talk('A');
+                break;
         }
         if (!event.repeat) {
             switch (event.keyCode) {

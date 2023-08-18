@@ -1612,7 +1612,9 @@ class Entity extends EventEmitter {
             }
             // Prepare it and clear the collision array.
             killText = killText.slice(0, -5);
-            if (killText === "You have been kille") {
+            if (this.label == 'Spectator') {
+                killText = "Spectating! Restart to unspectate"
+            } else if (killText === "You have been kille") {
                 killText = "You have died a stupid death";
             }
             this.sendMessage(killText + ".");

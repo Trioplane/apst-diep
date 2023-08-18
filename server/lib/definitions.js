@@ -3227,7 +3227,9 @@ exports.rocketeer = {
         },
     ],
 }; 
-exports.glider = {}  // 2 guns but slanted
+exports.glider = {
+
+}  // 2 guns but slanted
 
 
 // TRAPPER BRANCH
@@ -3502,12 +3504,11 @@ exports.summoner = {
     DANGER: 8,
     SHAPE: 4,
     COLOR: 13,
-    SIZE: 26,
-    MAX_CHILDREN: 28,
+    SIZE: 20,
     FACING_TYPE: "autospin",
     VALUE: 3e5,
     BODY: {
-        FOV: 0.5,
+        FOV: 1,
         SPEED: 0.1 * base.SPEED,
         HEALTH: 7 * base.HEALTH,
         DAMAGE: 2.6 * base.DAMAGE,
@@ -3517,8 +3518,9 @@ exports.summoner = {
             POSITION: [3.5, 8.65, 1.2, 8, 0, 90, 0],
             PROPERTIES: {
                 SHOOT_SETTINGS: combineStats([g.drone, g.summoner]),
-                TYPE: exports.sunchip,
+                TYPE: exports.summonerDrone,
                 AUTOFIRE: true,
+                MAX_CHILDREN: 5,
                 SYNCS_SKILLS: true,
                 STAT_CALCULATOR: gunCalcNames.necro,
                 WAIT_TO_CYCLE: true,
@@ -3528,8 +3530,9 @@ exports.summoner = {
             POSITION: [3.5, 8.65, 1.2, 8, 0, 270, 0.5],
             PROPERTIES: {
                 SHOOT_SETTINGS: combineStats([g.drone, g.summoner]),
-                TYPE: exports.sunchip,
+                TYPE: exports.summonerDrone,
                 AUTOFIRE: true,
+                MAX_CHILDREN: 5,
                 SYNCS_SKILLS: true,
                 STAT_CALCULATOR: gunCalcNames.necro,
                 WAIT_TO_CYCLE: true,
@@ -3539,8 +3542,9 @@ exports.summoner = {
             POSITION: [3.5, 8.65, 1.2, 8, 0, 0, 0.25],
             PROPERTIES: {
                 SHOOT_SETTINGS: combineStats([g.drone, g.summoner]),
-                TYPE: exports.sunchip,
+                TYPE: exports.summonerDrone,
                 AUTOFIRE: true,
+                MAX_CHILDREN: 5,
                 SYNCS_SKILLS: true,
                 STAT_CALCULATOR: gunCalcNames.necro,
                 WAIT_TO_CYCLE: true,
@@ -3550,14 +3554,87 @@ exports.summoner = {
             POSITION: [3.5, 8.65, 1.2, 8, 0, 180, 0.75],
             PROPERTIES: {
                 SHOOT_SETTINGS: combineStats([g.drone, g.summoner]),
-                TYPE: exports.sunchip,
+                TYPE: exports.summonerDrone,
                 AUTOFIRE: true,
+                MAX_CHILDREN: 5,
                 SYNCS_SKILLS: true,
                 STAT_CALCULATOR: gunCalcNames.necro,
                 WAIT_TO_CYCLE: true,
             },
         },
     ],
+};
+
+exports.omega_summoner = {
+    PARENT: [exports.miniboss],
+    NAME:  "Summoner",
+    LABEL: "Summoner",
+    DANGER: 8,
+    SHAPE: 4,
+    COLOR: 13,
+    SIZE: 10,
+    FACING_TYPE: "autospin",
+    VALUE: 3e5,
+    BODY: {
+        FOV: 1.1,
+        SPEED: 0.1 * base.SPEED,
+        HEALTH: 7 * base.HEALTH,
+        DAMAGE: 2.6 * base.DAMAGE,
+    },
+    GUNS: [
+        {
+            POSITION: [3.5, 8.65, 1.2, 8, 0, 90, 0],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.drone, g.summoner]),
+                TYPE: exports.summoner,
+                AUTOFIRE: true,
+                MAX_CHILDREN: 1,
+                SYNCS_SKILLS: true,
+                STAT_CALCULATOR: gunCalcNames.necro,
+                WAIT_TO_CYCLE: true,
+            },
+        },
+        {
+            POSITION: [3.5, 8.65, 1.2, 8, 0, 270, 0.5],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.drone, g.summoner]),
+                TYPE: exports.summoner,
+                AUTOFIRE: true,
+                MAX_CHILDREN: 1,
+                SYNCS_SKILLS: true,
+                STAT_CALCULATOR: gunCalcNames.necro,
+                WAIT_TO_CYCLE: true,
+            },
+        },
+        {
+            POSITION: [3.5, 8.65, 1.2, 8, 0, 0, 0.25],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.drone, g.summoner]),
+                TYPE: exports.summoner,
+                AUTOFIRE: true,
+                MAX_CHILDREN: 1,
+                SYNCS_SKILLS: true,
+                STAT_CALCULATOR: gunCalcNames.necro,
+                WAIT_TO_CYCLE: true,
+            },
+        },
+        {
+            POSITION: [3.5, 8.65, 1.2, 8, 0, 180, 0.75],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.drone, g.summoner]),
+                TYPE: exports.summoner,
+                AUTOFIRE: true,
+                MAX_CHILDREN: 1,
+                SYNCS_SKILLS: true,
+                STAT_CALCULATOR: gunCalcNames.necro,
+                WAIT_TO_CYCLE: true,
+            },
+        },
+    ],
+    TURRETS: [{
+        POSITION: [40, 0, 0, 180, 0, 0],
+        TYPE: [exports.summoner]
+    }]
 };
 
 exports.defender = {
@@ -3571,7 +3648,7 @@ exports.defender = {
     FACING_TYPE: "autospin",
     VALUE: 3e5,
     BODY: {
-        FOV: 0.5,
+        FOV: 1,
         SPEED: 0.1 * base.SPEED,
         HEALTH: 7 * base.HEALTH,
         DAMAGE: 2.6 * base.DAMAGE,
@@ -3603,6 +3680,56 @@ exports.defender = {
             })
         }
     }
+}
+
+exports.alpha_defender = {
+    PARENT: [exports.miniboss],
+    NAME: "Defender",
+    LABEL: "Defender",
+    DANGER: 8,
+    SHAPE: 3,
+    COLOR: exports.triangle.COLOR,
+    SIZE: 10,
+    FACING_TYPE: "autospin",
+    VALUE: 3e5,
+    BODY: {
+        FOV: 1.1,
+        SPEED: 0.1 * base.SPEED,
+        HEALTH: 7 * base.HEALTH,
+        DAMAGE: 2.6 * base.DAMAGE,
+    },
+    GUNS: [],
+    TURRETS: []
+}
+
+{
+    let angle = 360/6
+    for (let i = 0; i<6; i++) {
+        if (i % 2) {
+            exports.alpha_defender.GUNS.push({
+                POSITION: [12, 6, 1, 0, 0, angle * i, 0],
+            },
+            {
+                POSITION: [2.5, 6, 1.7, 12, 0, angle * i, 0],
+                PROPERTIES: {
+                    SHOOT_SETTINGS: combineStats([g.basic, g.weaker, g.lessreload]),
+                    AUTOFIRE: true,
+                    TYPE: exports.defender,
+                    MAX_CHILDREN: 1,
+                    STAT_CALCULATOR: gunCalcNames.drone,
+                },
+            })  
+        } else {
+            exports.alpha_defender.TURRETS.push({
+                POSITION: [4.5, 8.5, 0, angle * i, 180, 1],
+                TYPE: [exports.autoTurret]
+            })
+        }
+    }
+    exports.alpha_defender.TURRETS.push({
+        POSITION: [40, 0, 0, 180, 0, 0],
+        TYPE: [exports.defender]
+    })
 }
 
 // DOMINATORS
@@ -4011,6 +4138,14 @@ exports.tagMode = {
     LABEL: "Players",
 };
 
+function newTankFolder(name) {
+    return {
+        PARENT: [exports.testbedBase],
+        LABEL: name ? name : "Unnamed Folder",
+        UPGRADES_TIER_0: [exports.developer]
+    }
+}
+
 
 exports.levels = {
     PARENT: [exports.testbedBase],
@@ -4050,15 +4185,22 @@ exports.Team100 = {
 };
 exports.teams.UPGRADES_TIER_0.push(exports.Team100);
 
+exports.bosses = newTankFolder('Bosses')
+exports.diepbosses = newTankFolder('Diep Bosses')
+exports.miscbosses = newTankFolder('Misc Bosses')
+
 // TOKEN "UPGRADE PATHS"
-exports.developer.UPGRADES_TIER_0 = [exports.tank, exports.miscEntities, exports.levels, exports.teams];
+exports.developer.UPGRADES_TIER_0 = [exports.tank, exports.miscEntities, exports.levels, exports.teams, exports.spectator];
 exports.gameAdminMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.teams];
 exports.gameModMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.teams];
 exports.betaTesterMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.teams];
 
 // MISCELLANEOUS
-exports.miscEntities.UPGRADES_TIER_0 = [exports.dominators, exports.baseProtector, exports.mothership, exports.arenaCloser, exports.summoner, exports.defender];
+exports.miscEntities.UPGRADES_TIER_0 = [exports.dominators, exports.bosses, exports.baseProtector, exports.mothership, exports.arenaCloser];
 exports.dominators.UPGRADES_TIER_0 = [exports.dominator, exports.destroyerDominator, exports.gunnerDominator, exports.trapperDominator];
+exports.bosses.UPGRADES_TIER_0 = [exports.diepbosses, exports.miscbosses]
+exports.diepbosses.UPGRADES_TIER_0 = [exports.summoner, exports.defender]
+exports.miscbosses.UPGRADES_TIER_0 = [exports.omega_summoner, exports.alpha_defender]
 
 // TANK UPGRADE PATHS
     exports.tank.UPGRADES_TIER_1 = [exports.twin, exports.sniper, exports.machineGun, exports.flankGuard];
@@ -4073,7 +4215,7 @@ exports.dominators.UPGRADES_TIER_0 = [exports.dominator, exports.destroyerDomina
         exports.sniper.UPGRADES_TIER_2 = [exports.assassin, exports.hunter, exports.overseer, exports.trapper];
                 exports.assassin.UPGRADES_TIER_3 = [exports.ranger, exports.stalker]
                 exports.overseer.UPGRADES_TIER_3 = [exports.overlord, exports.necromancer, exports.manager, exports.overtrapper, exports.battleship, exports.factory]
-                exports.trapper.UPGRADES_TIER_3 = [exports.triTrapper, exports.autoTrapper, exports.gunnerTrapper, exports.overtrapper]; //mega trapper
+                exports.trapper.UPGRADES_TIER_3 = [exports.triTrapper, exports.autoTrapper, exports.gunnerTrapper, exports.overtrapper, exports.megaTrapper]; //mega trapper
                 exports.hunter.UPGRADES_TIER_3 = [exports.predator, exports.streamliner]
 
         exports.machineGun.UPGRADES_TIER_2 = [exports.destroyer, exports.gunner];
