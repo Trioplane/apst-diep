@@ -278,51 +278,48 @@ function spawnWall(loc) {
 }
 
 let fastSpawn = true
-let timer = fastSpawn ? Math.round(10) : Math.round(690); // It's in minutes
+let timer = fastSpawn ? Math.round(10) : Math.round(690); // convert seconds to minutes
+
 const bossSelections = [{
-    bosses: [Class.summoner, Class.defender], // add diep bosses
-    location: "nest",
-    amount: [5, 5, 4, 2, 1],
-    nameType: "a",
-    chance: 2,
-},{
-    bosses: [Class.summoner, Class.defender],
-    location: "norm",
-    amount: [4, 1],
-    nameType: "castle",
-    message: "A strange trembling...",
+    boss: Class.summoner,
+    location: ["norm", "nest"],
     chance: 1,
-}];
+}, {
+    boss: Class.defender,
+    location: ["norm", "nest"],
+    chance: 1,
+}, {
+    boss: Class.guardianOfThePentagons,
+    location: ["norm", "nest"],
+    chance: 1,
+}, {
+    boss: Class.fallenBooster,
+    location: ['norm', 'nest'],
+    chance: 1,
+}]
 
 let spawnBosses = (census) => {
-    if (!census.miniboss && !timer--) {
+    if (!census.miniboss&& !timer--) {
         timer--;
-        const selection = bossSelections[ran.chooseChance(...bossSelections.map((selection) => selection.chance))];
-        const amount = ran.chooseChance(...selection.amount) + 1;
-        sockets.broadcast(amount > 1 ? "Visitors are coming..." : "A visitor is coming...");
-        if (selection.message) {
-            setTimeout(sockets.broadcast, 2500, selection.message);
-        }
-        setTimeout(() => {
-            let names = ran.chooseBossName(selection.nameType, amount);
-            names = ("string" == typeof names) ? [names] : names;
-            sockets.broadcast(amount > 1 ? util.listify(names) + " have arrived!" : names[0] + " has arrived!");
-            names.forEach((name, i) => {
-                let spot,
-                    m = 0;
-                do {
-                    spot = room.randomType(selection.location);
-                    m++;
-                } while (dirtyCheck(spot, 500) && m < 30);
-                let boss = new Entity(spot);
-                boss.name = name;
-                boss.define(selection.bosses.sort(() => 0.5 - Math.random())[i % selection.bosses.length]);
-                boss.team = -100;
-            });
-        }, 5000);
-        timer = Math.round((c.bossSpawnInterval || 8) * 65); // 5 seconds due to spawning process
+        // choose boss
+        const selectedboss = bossSelections[ran.chooseChance(...bossSelections.map((selected) => selected.chance))]
+        const location = selectedboss.location[Math.floor(Math.random() * selectedboss.location.length)]
+        // spawn boss
+        let spot
+        let infiniteLoopBreaker = 0;
+        // can boss spawn here or should we move it to somewhere else
+        do {
+            spot = room.randomType(location)
+            infiniteLoopBreaker++
+        } while (dirtyCheck(spot, 500) && infiniteLoopBreaker < 30)
+        let boss = new Entity(spot)
+        boss.name = selectedboss.boss.NAME
+        boss.define(selectedboss.boss)    
+        boss.team = -100
+        sockets.broadcast(`The ${selectedboss.boss.LABEL} has spawned!`)
+        timer = fastSpawn ? Math.round(10) : Math.round(1320)
     }
-};
+}
 
 const crasherConfig = {
     max: Math.floor(room["nest"].length * c.CRASHER_RATIO),

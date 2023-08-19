@@ -232,12 +232,14 @@ class Canvas {
                 break;
         }
     }
-    mouseMove(mouse) {
+    mouseMove(mouse) {//pin
         global.statHover = global.clickables.hover.check({
             x: mouse.clientX * global.ratio,
             y: mouse.clientY * global.ratio,
         }) === 0;
         if (this.enableSpin) return;
+        global.mouse.x = mouse.clientX
+        global.mouse.y = mouse.clientY
         this.parent.target.x = (mouse.clientX * global.ratio) - (this.width / 2);
         this.parent.target.y = (mouse.clientY * global.ratio) - (this.height / 2);
         if (this.reverseDirection) {

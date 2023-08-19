@@ -446,6 +446,124 @@ class io_nearestDifferentMaster extends IO {
         return {};
     }
 }
+class io_nearestDifferentMaster_ram extends IO {
+    constructor(body, opts = {}) {
+        super(body);
+        this.accountForMovement = opts.accountForMovement ?? true;
+        this.targetLock = undefined;
+        this.tick = ran.irandom(30);
+        this.lead = 0;
+        this.validTargets = this.buildList(body.fov);
+        this.oldHealth = body.health.display();
+    }
+    validate(e, m, mm, sqrRange, sqrRangeMaster) {
+        return (e.health.amount > 0) &&
+        (!isNaN(e.dangerValue)) &&
+        (!e.invuln && !e.master.master.passive && !this.body.master.master.passive) &&
+        (e.master.master.team !== this.body.master.master.team) &&
+        (e.master.master.team !== -101) &&
+        (!e.master.master.ignoredByAi) &&
+        (!e.master.master.isDominator) &&
+        (this.body.aiSettings.seeInvisible || this.body.isArenaCloser || e.alpha > 0.5) &&
+        (e.type === "miniboss" || e.type === "tank" || e.type === "crasher" || (!this.body.aiSettings.IGNORE_SHAPES && e.type === 'food')) &&
+        (this.body.aiSettings.BLIND || ((e.x - m.x) * (e.x - m.x) < sqrRange && (e.y - m.y) * (e.y - m.y) < sqrRange)) &&
+        (this.body.aiSettings.SKYNET || ((e.x - mm.x) * (e.x - mm.x) < sqrRangeMaster && (e.y - mm.y) * (e.y - mm.y) < sqrRangeMaster));
+    }
+    buildList(range) {
+        // Establish whom we judge in reference to
+        let mostDangerous = 0,
+            keepTarget = false;
+        // Filter through everybody...
+        let out = entities.filter(e =>
+            // Only look at those within our view, and our parent's view, not dead, not invisible, not our kind, not a bullet/trap/block etc
+            this.validate(e, this.body, this.body.master.master, range * range, range * range * 4 / 3)
+        ).filter((e) => {
+            // Only look at those within range and arc (more expensive, so we only do it on the few)
+            if (this.body.firingArc == null || this.body.aiSettings.view360 || Math.abs(util.angleDifference(util.getDirection(this.body, e), this.body.firingArc[0])) < this.body.firingArc[1]) {
+                mostDangerous = Math.max(e.dangerValue, mostDangerous);
+                return true;
+            }
+        }).filter((e) => {
+            // Only return the highest tier of danger
+            if (this.body.aiSettings.farm || e.dangerValue === mostDangerous) {
+                if (this.targetLock && e.id === this.targetLock.id) keepTarget = true;
+                return true;
+            }
+        });
+        // Reset target if it's not in there
+        if (!keepTarget) this.targetLock = undefined;
+        return out;
+    }
+    think(input) {
+        // Override target lock upon other commands
+        if (input.main || input.alt || this.body.master.autoOverride) {
+            this.targetLock = undefined;
+            return {};
+        }
+        // Otherwise, consider how fast we can either move to ram it or shoot at a potiential target.
+        let tracking = this.body.topSpeed,
+            range = this.body.fov;
+        // Use whether we have functional guns to decide
+        for (let i = 0; i < this.body.guns.length; i++) {
+            if (false) {
+                let v = this.body.guns[i].getTracking();
+                if (v.speed == 0 || v.range == 0) continue;
+                tracking = v.speed;
+                range = Math.min(range, (v.speed || 1.5) * (v.range < (this.body.size * 2) ? this.body.fov : v.range));
+                break;
+            }
+        }
+        if (!Number.isFinite(tracking)) {
+            tracking = this.body.topSpeed + .01;
+        }
+        if (!Number.isFinite(range)) {
+            range = 640 * this.body.FOV;
+        }
+        // Check if my target's alive
+        if (this.targetLock && !this.validate(this.targetLock, this.body, this.body.master.master, range * range, range * range * 4 / 3)) {
+            this.targetLock = undefined;
+            this.tick = 100;
+        }
+        // Think damn hard
+        if (this.tick++ > 15 * roomSpeed) {
+            this.tick = 0;
+            this.validTargets = this.buildList(range);
+            // Ditch our old target if it's invalid
+            if (this.targetLock && this.validTargets.indexOf(this.targetLock) === -1) {
+                this.targetLock = undefined;
+            }
+            // Lock new target if we still don't have one.
+            if (this.targetLock == null && this.validTargets.length) {
+                this.targetLock = (this.validTargets.length === 1) ? this.validTargets[0] : nearest(this.validTargets, {
+                    x: this.body.x,
+                    y: this.body.y
+                });
+                this.tick = -90;
+            }
+        }
+        // Lock onto whoever's shooting me.
+        // let damageRef = (this.body.bond == null) ? this.body : this.body.bond
+        // if (damageRef.collisionArray.length && damageRef.health.display() < this.oldHealth) {
+        //     this.oldHealth = damageRef.health.display()
+        //     if (this.validTargets.indexOf(damageRef.collisionArray[0]) === -1) {
+        //         this.targetLock = (damageRef.collisionArray[0].master.id === -1) ? damageRef.collisionArray[0].source : damageRef.collisionArray[0].master
+        //     }
+        // }
+        // Consider how fast it's moving and shoot at it
+        if (this.targetLock != null) {
+           this.lead = 0;
+            return {
+                goal: {
+                    x: this.targetLock.x,
+                    y: this.targetLock.y,
+                },
+                fire: true,
+                main: true
+            };
+        }
+        return {};
+    }
+}
 class io_avoid extends IO {
     constructor(body) {
         super(body)
@@ -540,7 +658,7 @@ class io_minion extends IO {
         }
     }
 }
-class io_hangOutNearMaster extends IO {
+class io_hangOutNearMaster extends IO { //pin
     constructor(body) {
         super(body)
         this.acceptsFromTop = false
@@ -645,14 +763,57 @@ class io_zoom extends IO {
         }
     }
 }
-class io_wanderAroundMap extends IO {
+class io_wanderAroundMap extends IO { //pin
     constructor(b, opts = {}) {
         super(b);
         this.lookAtGoal = opts.lookAtGoal;
         this.immitatePlayerMovement = opts.immitatePlayerMovement;
         this.spot = room.randomType('norm');
+
+        this.bossWander = opts.bossWander
+        this.howFarAwayFromEdgeOfMap = 15
+        this.tick = 0
+        this.currentGoal = {x:0,y:0}
+        this.i = 0
     }
     think(input) {
+        if (this.bossWander) {
+            let points = [{
+                x: room.width / this.howFarAwayFromEdgeOfMap, // top left
+                y: room.height / this.howFarAwayFromEdgeOfMap
+            }, {
+                x: room.width - (room.width / this.howFarAwayFromEdgeOfMap), // top right
+                y: room.height / this.howFarAwayFromEdgeOfMap
+            }, {
+                x: room.width - (room.width / this.howFarAwayFromEdgeOfMap), // bottom right
+                y: room.height - (room.height / this.howFarAwayFromEdgeOfMap)
+            }, {
+                x: room.width / this.howFarAwayFromEdgeOfMap, // bottom left
+                y: room.height - (room.height / this.howFarAwayFromEdgeOfMap)
+            }]
+            this.tick++
+            this.currentGoal = points[this.i]
+            let distanceFromPoint = util.getDistance(this.body, this.currentGoal)
+            if (this.tick >= 100 + distanceFromPoint + (this.body.SPEED < 5 ? 1000 : 0)) {
+                this.tick = 0
+                if (this.i >= points.length - 1) {
+                    this.i = 0
+                } else {
+                    this.i++
+                }
+                this.currentGoal = points[this.i]
+            }
+            return {
+                goal: {
+                    x: this.currentGoal.x,
+                    y: this.currentGoal.y
+                },
+                target: this.lookAtGoal ? {
+                    x: this.currentGoal.x,
+                    y: this.currentGoal.y
+                } : null
+            }
+        }
         if (new Vector( this.body.x - this.spot.x, this.body.y - this.spot.y ).isShorterThan(50)) {
             this.spot = room.randomType('norm');
         }
@@ -681,6 +842,7 @@ let ioTypes = {
 
     //aiming related
     nearestDifferentMaster: io_nearestDifferentMaster,
+    nearestDifferentMaster_ram: io_nearestDifferentMaster_ram,
     targetSelf: io_targetSelf,
     onlyAcceptInArc: io_onlyAcceptInArc,
     spin: io_spin,
@@ -696,7 +858,7 @@ let ioTypes = {
     minion: io_minion,
     hangOutNearMaster: io_hangOutNearMaster,
     fleeAtLowHealth: io_fleeAtLowHealth,
-    wanderAroundMap: io_wanderAroundMap
+    wanderAroundMap: io_wanderAroundMap,
 };
 
 module.exports = { ioTypes, IO };

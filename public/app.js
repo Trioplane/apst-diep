@@ -18,6 +18,8 @@ let { socketInit, gui, leaderboard, minimap, moveCompensation, lag, getNow } = s
 //     });
 // });
 
+
+
 function getChangelogHeaders(parsed_html) {
     const changelogHeaders = {     
         changelogTitles: parsed_html.querySelectorAll('.changelogTitle'),
@@ -945,7 +947,8 @@ const drawEntity = (x, y, instance, ratio, alpha = 1, scale = 1, rot = 0, turret
         if (t.layer) {
             let ang = t.direction + t.angle + rot,
                 len = t.offset * drawSize,
-                facing = source.turrets[i].lerpedFacing + turretsObeyRot * rot;//util.lerp(t.defaultAngle + rot, source.turrets[i].lerpedFacing + turretsObeyRot * rot, t.perceptionAngleIndependence);
+                facing = source.turrets[i].lerpedFacing + turretsObeyRot * rot;
+                //util.lerp(t.defaultAngle + rot, source.turrets[i].lerpedFacing + turretsObeyRot * rot, t.perceptionAngleIndependence);
             //console.log('instance.name: ', instance.name, '\nfacing: ', facing, '\nrot: ', rot, '\nt.defaultAngle: ', t.defaultAngle, '\nsource.turrets[i].lerpedFacing: ', source.turrets[i].lerpedFacing, '\nturretsObeyRot: ', turretsObeyRot, '\nt.perceptionAngleIndependence: ', t.perceptionAngleIndependence);
             drawEntity(xx + len * Math.cos(ang), yy + len * Math.sin(ang), t, ratio, 1, (drawSize / ratio / t.size) * t.sizeFactor, facing, turretsObeyRot, context, source.turrets[i], render);
         }

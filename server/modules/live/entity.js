@@ -1475,7 +1475,12 @@ class Entity extends EventEmitter {
             }
             if (c.TEAMS === 1) inEnemyBase = false;
             if (room.isIn("boss", loc) && this.team !== -100) inEnemyBase = true;
-            if (inEnemyBase && !this.isArenaCloser && !this.master.isArenaCloser) {
+            if (inEnemyBase && this.type == ("bullet" || 'swarm' || 'drone' || 'minion')) {
+                if (this.master.type != 'miniboss') {
+                    this.kill()
+                }
+            } else
+            if (inEnemyBase && !this.isArenaCloser && !this.master.isArenaCloser && this.type != 'miniboss') {
                 this.kill();
             }
         }
@@ -1590,21 +1595,8 @@ class Entity extends EventEmitter {
             if (this.settings.broadcastMessage) {
                 sockets.broadcast(this.settings.broadcastMessage);
             }
-            if (this.settings.defeatMessage) {
-                let text = util.addArticle(this.label, true);
-                if (notJustFood) {
-                    text += " has been defeated by";
-                    killers.forEach((instance) => {
-                        text += " ";
-                        text += instance.name === "" ? "an unnamed player" : instance.name;
-                        text += " and";
-                    });
-                    text = text.slice(0, -4);
-                    text += "!";
-                } else {
-                    text += " fought a polygon... and the polygon won.";
-                }
-                sockets.broadcast(text);
+            if (this.type == 'miniboss') {
+                sockets.broadcast(`The ${this.name} has been defeated by ${killers[0]?.name ?? 'an unnamed player'}!`)
             }
             // Add the implements to the message
             for (let i = 0; i < killTools.length; i++) {
@@ -1619,21 +1611,6 @@ class Entity extends EventEmitter {
             }
             this.sendMessage(killText + ".");
             // If I'm the leader, broadcast it:
-            if (this.id === room.topPlayerID) {
-                let usurptText = this.name === "" ? "The leader" : this.name;
-                if (notJustFood) {
-                    usurptText += " has been usurped by";
-                    for (let i = 0; i < killers.length; i++) {
-                        usurptText += " ";
-                        usurptText += killers[i].name === "" ? "an unnamed player" : killers[i].name;
-                        usurptText += " and";
-                    }
-                    usurptText = usurptText.slice(0, -4) + "!";
-                } else {
-                    usurptText += " fought a polygon... and the polygon won.";
-                }
-                sockets.broadcast(usurptText);
-            }
             this.setKillers(killers);
             // Kill it
             return 1;

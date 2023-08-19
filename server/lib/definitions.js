@@ -3458,13 +3458,13 @@ exports.miniboss = {
         mob: 0,
     }),
     LEVEL: 45,
-    CONTROLLERS: ["nearestDifferentMaster", "minion", "canRepel"],
+    CONTROLLERS: ["nearestDifferentMaster", "mapAltToFire", "minion", "fleeAtLowHealth", ["mapFireToAlt", { onlyIfHasAltFireGun: true }], ["wanderAroundMap", { immitatePlayerMovement: true, lookAtGoal: true }]],
     AI: {
         NO_LEAD: true,
     },
     FACING_TYPE: "autospin",
     HITS_OWN_TYPE: "hardOnlyBosses",
-    BROADCAST_MESSAGE: "A visitor has left!",
+    DISPLAY_NAME: true,
 };
 
 exports.summoner = {
@@ -3480,7 +3480,7 @@ exports.summoner = {
     BODY: {
         FOV: 1,
         SPEED: 0.1 * base.SPEED,
-        HEALTH: 7 * base.HEALTH,
+        HEALTH: 100 * base.HEALTH,
         DAMAGE: 2.6 * base.DAMAGE,
     },
     GUNS: [
@@ -3533,7 +3533,186 @@ exports.summoner = {
             },
         },
     ],
+    DISPLAY_NAME: true,
 };
+
+exports.defender = {
+    PARENT: [exports.miniboss],
+    NAME: "Defender",
+    LABEL: "Defender",
+    DANGER: 8,
+    SHAPE: 3,
+    COLOR: exports.triangle.COLOR,
+    SIZE: 20,
+    FACING_TYPE: "autospin",
+    VALUE: 3e5,
+    BODY: {
+        FOV: 1,
+        SPEED: 0.1 * base.SPEED,
+        HEALTH: 100 * base.HEALTH,
+        DAMAGE: 2.6 * base.DAMAGE,
+    },
+    GUNS: [],
+    TURRETS: [],
+    DISPLAY_NAME: true,
+}
+
+{
+    let angle = 360/6
+    for (let i = 0; i<6; i++) {
+        if (i % 2) {
+            exports.defender.GUNS.push({
+                POSITION: [12, 6, 1, 0, 0, angle * i, 0],
+            },
+            {
+                POSITION: [2.5, 6, 1.7, 12, 0, angle * i, 0],
+                PROPERTIES: {
+                    SHOOT_SETTINGS: combineStats([g.basic, g.tiny, g.small, g.weak, g.lessreload]),
+                    AUTOFIRE: true,
+                    TYPE: exports.trap,
+                    STAT_CALCULATOR: gunCalcNames.trap,
+                },
+            })  
+        } else {
+            exports.defender.TURRETS.push({
+                POSITION: [4.5, 8.5, 0, angle * i, 180, 1],
+                TYPE: [exports.autoTurret]
+            })
+        }
+    }
+}
+
+exports.guardianOfThePentagons_crasher = {
+    PARENT: [exports.bullet],
+    LABEL: "Crasher",
+    COLOR: 5,
+    SHAPE: 3,
+    SIZE: 5,
+    INDEPENDENT: true,
+    VARIES_IN_SIZE: true,
+    CONTROLLERS: ["nearestDifferentMaster", "mapTargetToGoal", "hangOutNearMaster"],
+    BODY: {
+        SPEED: 5,
+        ACCELERATION: 1.4,
+        HEALTH: 0.5,
+        DAMAGE: 5,
+        PENETRATION: 2,
+        PUSHABILITY: 0.5,
+        DENSITY: 10,
+        RESIST: 2,
+    },
+    MOTION_TYPE: "motor",
+    FACING_TYPE: "smoothWithMotion",
+    HITS_OWN_TYPE: "hard",
+};
+
+exports.guardianOfThePentagons = {
+    PARENT: [exports.miniboss],
+    LABEL: 'Guardian of the Pentagons',
+    NAME: 'Guardian',
+    SHAPE: 3,
+    BODY: {
+        HEALTH: 100 * base.HEALTH
+    },
+    COLOR: exports.guardianOfThePentagons_crasher.COLOR,
+    SIZE: 20,
+    FACING_TYPE: 'smoothToTarget',
+    MAX_CHILDREN: 24,
+    GUNS: [{
+        POSITION: [15, 15, -0.5, -5, 0, 180, 0],
+        PROPERTIES: {
+            SHOOT_SETTINGS: combineStats([g.basic, g.tiny, g.tiny, g.smaller, g.small, g.doublereload, g.doublereload]),
+            TYPE: exports.guardianOfThePentagons_crasher,
+            AUTOFIRE: true,
+            STAT_CALCULATOR: gunCalcNames.drone
+        }
+    }],
+    DISPLAY_NAME: true,
+}
+
+exports.fallenBooster = {
+    PARENT: [exports.miniboss],
+    LABEL: "Fallen Booster",
+    NAME: "Fallen Booster",
+    FACING_TYPE: 'smoothToTarget',
+    MOTION_TYPE: 'motor',
+    AI: {
+        NO_LEAD: true
+    },
+    COLOR: 7,
+    SIZE: 15,
+    CONTROLLERS: [['nearestDifferentMaster', {accountForMovement: false,}], "mapTargetToGoal"],
+    BODY: {
+        HEALTH: base.HEALTH * 100,
+        SHIELD: base.SHIELD * 0.4,
+        DENSITY: base.DENSITY * 0.3,
+    },
+    SKILL: skillSet({
+        rld: 0.7,
+        dam: 0.8,
+        pen: 0.8,
+        str: 0.8,
+        spd: 0.2,
+        atk: 0.3,
+        hlt: 1,
+        shi: 0.7,
+        rgn: 0.7,
+        mob: 1,
+    }),
+    IS_SMASHER: true,
+    DANGER: 7,
+    GUNS: [
+        {
+            /*** LENGTH    WIDTH     ASPECT        X             Y         ANGLE     DELAY */
+            POSITION: [18, 8, 1, 0, 0, 0, 0],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([
+                    g.basic,
+                    g.flank,
+                    g.tri,
+                    g.trifront,
+                    g.tonsmorrecoil,
+                ]),
+                TYPE: exports.bullet,
+                LABEL: "Front",
+            },
+        },
+        {
+            POSITION: [13, 8, 1, 0, -1, 140, 0.6],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.basic, g.flank, g.tri, g.thruster]),
+                TYPE: exports.bullet,
+                LABEL: gunCalcNames.thruster,
+            },
+        },
+        {
+            POSITION: [13, 8, 1, 0, 1, 220, 0.6],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.basic, g.flank, g.tri, g.thruster]),
+                TYPE: exports.bullet,
+                LABEL: gunCalcNames.thruster,
+            },
+        },
+        {
+            POSITION: [16, 8, 1, 0, 0, 150, 0.1],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.basic, g.flank, g.tri, g.thruster]),
+                TYPE: exports.bullet,
+                LABEL: gunCalcNames.thruster,
+            },
+        },
+        {
+            POSITION: [16, 8, 1, 0, 0, 210, 0.1],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.basic, g.flank, g.tri, g.thruster]),
+                TYPE: exports.bullet,
+                LABEL: gunCalcNames.thruster,
+            },
+        },
+    ],
+}
+
+// MISC BOSSES
 
 exports.omega_summoner = {
     PARENT: [exports.miniboss],
@@ -3607,51 +3786,6 @@ exports.omega_summoner = {
     }]
 };
 
-exports.defender = {
-    PARENT: [exports.miniboss],
-    NAME: "Defender",
-    LABEL: "Defender",
-    DANGER: 8,
-    SHAPE: 3,
-    COLOR: exports.triangle.COLOR,
-    SIZE: 20,
-    FACING_TYPE: "autospin",
-    VALUE: 3e5,
-    BODY: {
-        FOV: 1,
-        SPEED: 0.1 * base.SPEED,
-        HEALTH: 7 * base.HEALTH,
-        DAMAGE: 2.6 * base.DAMAGE,
-    },
-    GUNS: [],
-    TURRETS: []
-}
-
-{
-    let angle = 360/6
-    for (let i = 0; i<6; i++) {
-        if (i % 2) {
-            exports.defender.GUNS.push({
-                POSITION: [12, 6, 1, 0, 0, angle * i, 0],
-            },
-            {
-                POSITION: [2.5, 6, 1.7, 12, 0, angle * i, 0],
-                PROPERTIES: {
-                    SHOOT_SETTINGS: combineStats([g.basic, g.tiny, g.small, g.weak, g.lessreload]),
-                    AUTOFIRE: true,
-                    TYPE: exports.trap,
-                    STAT_CALCULATOR: gunCalcNames.trap,
-                },
-            })  
-        } else {
-            exports.defender.TURRETS.push({
-                POSITION: [4.5, 8.5, 0, angle * i, 180, 1],
-                TYPE: [exports.autoTurret]
-            })
-        }
-    }
-}
-
 exports.alpha_defender = {
     PARENT: [exports.miniboss],
     NAME: "Defender",
@@ -3701,8 +3835,6 @@ exports.alpha_defender = {
         TYPE: [exports.defender]
     })
 }
-
-// MISC BOSSES
 
 exports.spawner = {
     PARENT: [exports.genericTank],
@@ -4213,6 +4345,21 @@ exports.crasher = {
     DRAW_HEALTH: true,
 };
 
+// testing entity
+
+exports.testEntity = {
+    PARENT: [exports.genericTank],
+    SHAPE: 6,
+    CONTROLLERS: [['wanderAroundMap', {bossWander: true,}]],
+    GUNS: [{
+        POSITION: [18, 7.5, 0, 0, 0, 0, 0],
+        PROPERTIES: {
+            SHOOT_SETTINGS: combineStats([g.basic]),
+            TYPE: [exports.trap]
+        }
+    }]
+}
+
 // BOTS
 exports.bot = {
     FACING_TYPE: "looseToTarget",
@@ -4278,7 +4425,7 @@ exports.diepbosses = newTankFolder('Diep Bosses')
 exports.miscbosses = newTankFolder('Misc Bosses')
 
 // TOKEN "UPGRADE PATHS"
-exports.developer.UPGRADES_TIER_0 = [exports.tank, exports.miscEntities, exports.levels, exports.teams, exports.spectator];
+exports.developer.UPGRADES_TIER_0 = [exports.tank, exports.miscEntities, exports.levels, exports.teams, exports.spectator, exports.testEntity];
 exports.gameAdminMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.teams];
 exports.gameModMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.teams];
 exports.betaTesterMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.teams];
@@ -4287,7 +4434,7 @@ exports.betaTesterMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.
 exports.miscEntities.UPGRADES_TIER_0 = [exports.dominators, exports.bosses, exports.baseProtector, exports.mothership, exports.arenaCloser];
 exports.dominators.UPGRADES_TIER_0 = [exports.dominator, exports.destroyerDominator, exports.gunnerDominator, exports.trapperDominator];
 exports.bosses.UPGRADES_TIER_0 = [exports.diepbosses, exports.miscbosses]
-exports.diepbosses.UPGRADES_TIER_0 = [exports.summoner, exports.defender]
+exports.diepbosses.UPGRADES_TIER_0 = [exports.summoner, exports.defender, exports.guardianOfThePentagons, exports.fallenBooster]
 exports.miscbosses.UPGRADES_TIER_0 = [exports.omega_summoner, exports.alpha_defender, exports.ruler]
 
 // TANK UPGRADE PATHS

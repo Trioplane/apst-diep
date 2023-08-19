@@ -152,6 +152,7 @@ const global = {
         lastuplink: 0,
     },
     target: { x: 0, y: 0 },
+    mouse: { x: 0, y: 0 },
     fps: 60,
     screenSize: Math.min(1920, Math.max(window.innerWidth, 1280)),
     ratio: window.devicePixelRatio
