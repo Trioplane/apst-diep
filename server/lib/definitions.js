@@ -228,6 +228,10 @@ const g = {
     strong:   [1, 1, 1, 1, 1, 1.2, 1, 1, 1, 1, 1, 1, 1],
     stronger: [1, 1, 1, 1, 1, 1.5, 1, 1, 1, 1, 1, 1, 1],
 
+    // 
+
+    pacifist: [1, 1, 1, 1, 1e99, 1e-99, 1, 1, 1, 1, 1, 1, 1]
+
     // 1Reload, 2recoil, 3shudder (speed variation), 4size, 5health, 6damage, 7penetration, 8speed, 9max speed, 10range, 11density, 12spray (accuracy variation), 13resist
 }; 
 
@@ -936,7 +940,7 @@ exports.genericTank = {
     DANGER: 5,
     MOTION_TYPE: "motor",
     FACING_TYPE: "toTarget",
-    SIZE: 12,
+    SIZE: 10,
     MAX_CHILDREN: 0,
     DAMAGE_EFFECTS: false,
     IGNORED_BY_AI: false,
@@ -1525,51 +1529,6 @@ exports.autoTurret = {
                     g.turret,
                 ]),
                 TYPE: exports.bullet,
-            },
-        },
-    ],
-};
-exports.autoSmasherTurret = {
-    PARENT: [exports.genericTank],
-    LABEL: "Turret",
-    COLOR: 16,
-    GUNS: [
-        {
-            POSITION: [20, 6, 1, 0, 5, 0, 0],
-            PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([
-                    g.basic,
-                    g.gunner,
-                    g.power,
-                    g.morerecoil,
-                    g.turret,
-                    g.fast,
-                    g.mach,
-                    g.pound,
-                    g.morereload,
-                    g.morereload,
-                ]),
-                TYPE: exports.bullet,
-                STAT_CALCULATOR: gunCalcNames.fixedReload,
-            },
-        },
-        {
-            POSITION: [20, 6, 1, 0, -5, 0, 0.5],
-            PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([
-                    g.basic,
-                    g.gunner,
-                    g.power,
-                    g.morerecoil,
-                    g.turret,
-                    g.fast,
-                    g.mach,
-                    g.pound,
-                    g.morereload,
-                    g.morereload,
-                ]),
-                TYPE: exports.bullet,
-                STAT_CALCULATOR: gunCalcNames.fixedReload,
             },
         },
     ],
@@ -2229,23 +2188,23 @@ exports.triplet = {
     LABEL: "Triplet",
     GUNS: [
         {
-            POSITION: [18, 10, 1, 0, 5, 0, 0.5],
+            POSITION: [16.5, 7.5, 1, 0, 5.5, 0, 0.5],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triple]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triple, g.morereload]),
                 TYPE: exports.bullet,
             },
         },
         {
-            POSITION: [18, 10, 1, 0, -5, 0, 0.5],
+            POSITION: [16.5, 7.5, 1, 0, -5.5, 0, 0.5],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triple]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triple, g.morereload]),
                 TYPE: exports.bullet,
             },
         },
         {
-            POSITION: [21, 10, 1, 0, 0, 0, 0],
+            POSITION: [19.5, 7.5, 1, 0, 0, 0, 0],
             PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triple]),
+                SHOOT_SETTINGS: combineStats([g.basic, g.twin, g.triple, g.morereload]),
                 TYPE: exports.bullet,
             },
         },
@@ -3081,7 +3040,7 @@ exports.necromancer = {
         SPEED: 0.8 * base.SPEED,
     },
     SHAPE: 4,
-    MAX_CHILDREN: 14,
+    MAX_CHILDREN: 14 * 2,
     GUNS: [
         {
             /*** LENGTH    WIDTH     ASPECT        X             Y         ANGLE     DELAY */
@@ -3104,38 +3063,6 @@ exports.necromancer = {
                 STAT_CALCULATOR: gunCalcNames.necro,
             },
         },
-        {
-            POSITION: [5.25, 12, 1.2, 8, 0, 0, 0.25],
-            PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([
-                    g.drone,
-                    g.sunchip,
-                    g.weak,
-                    g.doublereload,
-                ]),
-                TYPE: exports.sunchip,
-                AUTOFIRE: true,
-                SYNCS_SKILLS: true,
-                MAX_CHILDREN: 4,
-                STAT_CALCULATOR: gunCalcNames.necro,
-            },
-        },
-        {
-            POSITION: [5.25, 12, 1.2, 8, 0, 180, 0.75],
-            PROPERTIES: {
-                SHOOT_SETTINGS: combineStats([
-                    g.drone,
-                    g.sunchip,
-                    g.weak,
-                    g.doublereload,
-                ]),
-                TYPE: exports.sunchip,
-                AUTOFIRE: true,
-                SYNCS_SKILLS: true,
-                MAX_CHILDREN: 4,
-                STAT_CALCULATOR: gunCalcNames.necro,
-            },
-        },
     ],
 };
 
@@ -3144,6 +3071,7 @@ exports.factory = {
     PARENT: [exports.genericTank],
     LABEL: "Factory",
     DANGER: 7,
+    SHAPE: 4,
     STAT_NAMES: statnames.drone,
     BODY: {
         SPEED: base.SPEED * 0.8,
@@ -3152,11 +3080,7 @@ exports.factory = {
     MAX_CHILDREN: 6,
     GUNS: [
         {
-            /**** LENGTH    WIDTH     ASPECT        X             Y         ANGLE     DELAY */
-            POSITION: [5, 11, 1, 10.5, 0, 0, 0],
-        },
-        {
-            POSITION: [2, 14, 1, 15.5, 0, 0, 0],
+            POSITION: [14, 15, -0.65, -0.2, 0, 0, 0],
             PROPERTIES: {
                 SHOOT_SETTINGS: combineStats([g.factory]),
                 TYPE: exports.minion,
@@ -3164,9 +3088,6 @@ exports.factory = {
                 AUTOFIRE: true,
                 SYNCS_SKILLS: true,
             },
-        },
-        {
-            POSITION: [12, 14, 1, 0, 0, 0, 0],
         },
     ],
 };
@@ -3387,7 +3308,7 @@ exports.gunnerTrapper = {
     },
     GUNS: [
         {
-            POSITION: [19, 2, 1, 0, -2.5, 0, 0],
+            POSITION: [16, 3.5, 1, 0, -3.2, 0, 0],
             PROPERTIES: {
                 SHOOT_SETTINGS: combineStats([
                     g.basic,
@@ -3401,7 +3322,7 @@ exports.gunnerTrapper = {
             },
         },
         {
-            POSITION: [19, 2, 1, 0, 2.5, 0, 0.5],
+            POSITION: [16,3.54, 1, 0, 3.2, 0, 0.5],
             PROPERTIES: {
                 SHOOT_SETTINGS: combineStats([
                     g.basic,
@@ -3413,9 +3334,6 @@ exports.gunnerTrapper = {
                 ]),
                 TYPE: exports.bullet,
             },
-        },
-        {
-            POSITION: [12, 11, 1, 0, 0, 0, 0],
         },
         {
             POSITION: [13, 11, 1, 0, 0, 180, 0],
@@ -3483,10 +3401,7 @@ exports.spike = {
         },
     ],
 };
-exports.autoSmasher = makeAuto(exports.smasher, "Auto-Smasher", {
-    type: exports.autoSmasherTurret,
-    size: 11,
-})
+exports.autoSmasher = makeAuto(exports.smasher, "Auto-Smasher")
     exports.autoSmasher.SKILL_CAP = [
         smshskl,
         smshskl,
@@ -3785,6 +3700,124 @@ exports.alpha_defender = {
         POSITION: [40, 0, 0, 180, 0, 0],
         TYPE: [exports.defender]
     })
+}
+
+// MISC BOSSES
+
+exports.spawner = {
+    PARENT: [exports.genericTank],
+    LABEL: "Spawner",
+    DANGER: 6,
+    COLOR: 7,
+    INDEPENDENT: true,
+    FACING_TYPE: 'smoothToTarget',
+    STAT_NAMES: statnames.drone,
+    BODY: {
+        SPEED: base.SPEED * 0.8,
+        FOV: 1.1,
+    },
+    GUNS: [
+        {
+            /**** LENGTH    WIDTH     ASPECT        X             Y         ANGLE     DELAY */
+            POSITION: [4.5, 10, 1, 10.5, 0, 0, 0],
+        },
+        {
+            POSITION: [1, 12, 1, 15, 0, 0, 0],
+            PROPERTIES: {
+                MAX_CHILDREN: 4,
+                SHOOT_SETTINGS: combineStats([g.factory, g.babyfactory]),
+                TYPE: exports.minion,
+                STAT_CALCULATOR: gunCalcNames.drone,
+                AUTOFIRE: true,
+                SYNCS_SKILLS: true,
+            },
+        },
+        {
+            POSITION: [11.5, 12, 1, 0, 0, 0, 0],
+        },
+    ],
+};
+
+exports.autoSpawner = makeAuto(exports.spawner)
+
+exports.ruler_revolvers = {
+    PARENT: [exports.genericTank],
+    LABEL: "Revolver",
+    CONTROLLERS: ['spin', 'teleportToMaster'],
+    FACING_TYPE: 'autospin',
+    TURRETS: [],
+    LAYER: -1,
+}
+
+{
+    let angle = 360 / 3
+    for (let i = 0; i < 3; i++) {
+        exports.ruler_revolvers.TURRETS.push({
+            POSITION: [15, 40, 0, angle * i, 300, 0],
+            TYPE: [exports.autoSpawner]
+        })
+    }
+}
+
+exports.setTrap = {
+    LABEL: "Set Trap",
+    PARENT: [exports.trap],
+    SHAPE: -4,
+    MOTION_TYPE: "motor",
+    CONTROLLERS: ["goToMasterTarget"],
+    BODY: {
+        SPEED: 1,
+        DENSITY: 5,
+    },
+};
+
+exports.ruler = {
+    PARENT: [exports.miniboss],
+    LABEL: "Ruler",
+    COLOR: 7,
+    SIZE: 15,
+    BODY: {
+        SPEED: base.SPEED * 2,
+        HEALTH: base.HEALTH * 2
+    },
+    SKILL: skillSet({
+        rld: 0.7,
+        dam: 0.6,
+        pen: 0.8,
+        str: 0.8,
+        spd: 0.2,
+        atk: 0.3,
+        hlt: 1,
+        shi: 0.7,
+        rgn: 0.7,
+        mob: 1,
+    }),
+    FACING_TYPE: 'smoothToTarget',
+    IS_SMASHER: true,
+    GUNS: [{
+            POSITION: [21, 14, 1, 0, 0, 0, 0],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.basic, g.pound, g.destroy]),
+                TYPE: exports.bullet,
+            },
+        },
+        {
+            POSITION: [18, 12, 1, 0, 0, 180, 0],
+        },
+        {
+            POSITION: [2, 12, 1.1, 18, 0, 180, 0],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.trap, g.block]),
+                TYPE: exports.setTrap,
+            },
+        }, {
+            POSITION: [5, 5, 0, 0, 0, 0, 0],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.drone, g.bigger, g.bigger, g.bigger, g.bigger]),
+                MAX_CHILDREN: 1,
+                TYPE: exports.ruler_revolvers
+            }
+        }],
 }
 
 // DOMINATORS
@@ -4255,7 +4288,7 @@ exports.miscEntities.UPGRADES_TIER_0 = [exports.dominators, exports.bosses, expo
 exports.dominators.UPGRADES_TIER_0 = [exports.dominator, exports.destroyerDominator, exports.gunnerDominator, exports.trapperDominator];
 exports.bosses.UPGRADES_TIER_0 = [exports.diepbosses, exports.miscbosses]
 exports.diepbosses.UPGRADES_TIER_0 = [exports.summoner, exports.defender]
-exports.miscbosses.UPGRADES_TIER_0 = [exports.omega_summoner, exports.alpha_defender]
+exports.miscbosses.UPGRADES_TIER_0 = [exports.omega_summoner, exports.alpha_defender, exports.ruler]
 
 // TANK UPGRADE PATHS
     exports.tank.UPGRADES_TIER_1 = [exports.twin, exports.sniper, exports.machineGun, exports.flankGuard];

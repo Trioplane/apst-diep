@@ -1172,12 +1172,18 @@ const eyes = (socket) => {
             // If we are alive, update the camera
             if (player.body != null) {
                 // But I just died...
+                const spectateWhenDead = false
                 if (player.body.isDead()) {
-                    socket.status.deceased = true;
+                    if (spectateWhenDead) {
+                        player.body.define(Class.spectator)
+                        player.body.protect()        
+                    } else if (!spectateWhenDead) {
+                        socket.status.deceased = true;
                     // Let the client know it died
-                    socket.talk("F", ...player.records());
+                        socket.talk("F", ...player.records());
                     // Remove the body
-                    player.body = null;
+                        player.body = null;
+                    }
                 }
                 // I live!
                 else if (player.body.photo) {

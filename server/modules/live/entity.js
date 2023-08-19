@@ -995,7 +995,7 @@ class Entity extends EventEmitter {
         this.skill = this.bond.skill;
         this.label = this.bond.label + " " + this.label;
         // It will not be in collision calculations any more nor shall it be seen.
-        this.removeFromGrid();
+        this.removeFromGrid()
         this.settings.drawShape = false;
         // Get my position.
         let _off = new Vector(position[1], position[2]);

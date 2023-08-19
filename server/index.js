@@ -277,7 +277,8 @@ function spawnWall(loc) {
     o.life();
 }
 
-let timer = Math.round((c.bossSpawnInterval || 8) * 10); // It's in minutes
+let fastSpawn = true
+let timer = fastSpawn ? Math.round(10) : Math.round(690); // It's in minutes
 const bossSelections = [{
     bosses: [Class.summoner, Class.defender], // add diep bosses
     location: "nest",
@@ -494,11 +495,11 @@ class FoodType {
 }
 const foodTypes = [
     new FoodType("Normal Food",
-        [Class.square, Class.triangle, Class.pentagon, Class.alphaPentagon],
+        [Class.square, Class.triangle, Class.pentagon],
         ["scale", 4], 2000
     ),
     new FoodType("Shiny Food",
-        [Class.shinySquare, Class.shinyTriangle, Class.shinyPentagon, Class.shinyAlphaPentagon],
+        [Class.shinySquare, Class.shinyTriangle, Class.shinyPentagon],
         ["scale", 5], 1
     ),
     new FoodType("Nest Food", // Commented out because stats aren't done yet.

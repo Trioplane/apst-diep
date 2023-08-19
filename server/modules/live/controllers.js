@@ -141,6 +141,18 @@ class io_listenToPlayer extends IO {
         };
     }
 }
+
+class io_teleportToMaster extends IO {
+    constructor(body) {
+        super(body);
+    }
+    think(input) {
+      this.body.x = this.body.source.x
+      this.body.y = this.body.source.y
+      this.body.accel.x = 0
+      this.body.accel.y = 0
+    }
+}
 class io_mapTargetToGoal extends IO {
     constructor(b) {
         super(b)
@@ -532,7 +544,7 @@ class io_hangOutNearMaster extends IO {
     constructor(body) {
         super(body)
         this.acceptsFromTop = false
-        this.orbit = 30
+        this.orbit = 40
         this.currentGoal = {
             x: this.body.source.x,
             y: this.body.source.y,
@@ -665,6 +677,7 @@ let ioTypes = {
     alwaysFire: io_alwaysFire,
     mapAltToFire: io_mapAltToFire,
     mapFireToAlt: io_mapFireToAlt,
+    teleportToMaster: io_teleportToMaster,
 
     //aiming related
     nearestDifferentMaster: io_nearestDifferentMaster,
