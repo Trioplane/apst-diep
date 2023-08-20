@@ -3584,6 +3584,7 @@ exports.defender = {
 
 exports.guardianOfThePentagons_crasher = {
     PARENT: [exports.bullet],
+    TYPE: 'bossProjectile',
     LABEL: "Crasher",
     COLOR: 5,
     SHAPE: 3,
@@ -3594,7 +3595,7 @@ exports.guardianOfThePentagons_crasher = {
     BODY: {
         SPEED: 5,
         ACCELERATION: 1.4,
-        HEALTH: 0.5,
+        HEALTH: 0.1,
         DAMAGE: 5,
         PENETRATION: 2,
         PUSHABILITY: 0.5,
@@ -3621,7 +3622,7 @@ exports.guardianOfThePentagons = {
     GUNS: [{
         POSITION: [15, 15, -0.5, -5, 0, 180, 0],
         PROPERTIES: {
-            SHOOT_SETTINGS: combineStats([g.basic, g.tiny, g.tiny, g.smaller, g.small, g.doublereload, g.doublereload]),
+            SHOOT_SETTINGS: combineStats([g.basic, g.tiny, g.tiny, g.smaller, g.small, g.doublereload, g.doublereload, g.weak]),
             TYPE: exports.guardianOfThePentagons_crasher,
             AUTOFIRE: true,
             STAT_CALCULATOR: gunCalcNames.drone
@@ -3710,6 +3711,74 @@ exports.fallenBooster = {
             },
         },
     ],
+}
+
+exports.fallenOverlord_drone = {
+    PARENT: [exports.bullet],
+    TYPE: 'bossProjectile',
+    LABEL: "Drone",
+    INDEPENDENT: true,
+    ACCEPTS_SCORE: false,
+    DANGER: 2,
+    CONTROL_RANGE: 0,
+    SHAPE: 3,
+    MOTION_TYPE: "chase",
+    FACING_TYPE: "smoothToTarget",
+    CONTROLLERS: [
+        "nearestDifferentMaster",
+        "canRepel",
+        "mapTargetToGoal",
+        "hangOutNearMaster",
+    ],
+    AI: {
+        BLIND: true,
+    },
+    BODY: {
+        PENETRATION: 1.2,
+        PUSHABILITY: 0.6,
+        ACCELERATION: 0.05,
+        HEALTH: 0.1,
+        DAMAGE: 3.375,
+        SPEED: 3.8,
+        RANGE: 200,
+        DENSITY: 0.03,
+        RESIST: 1.5,
+        FOV: 0.5,
+    },
+    HITS_OWN_TYPE: "hard",
+    DRAW_HEALTH: false,
+    CLEAR_ON_MASTER_UPGRADE: true,
+    BUFF_VS_FOOD: true,
+};
+
+exports.fallenOverlord = {
+    PARENT: [exports.miniboss],
+    LABEL: 'Fallen Overlord',
+    NAME: 'Fallen Overlord',
+    BODY: {
+        HEALTH: 100 * base.HEALTH
+    },
+    FACING_TYPE: 'autospin',
+    COLOR: 7,
+    SIZE: 20,
+    MAX_CHILDREN: 24,
+    GUNS: (() => {
+        let output = []
+        let angle = 360/4
+        for (let i = 0; i < 4; i++) {
+            output.push({
+                POSITION: [6, 12, 1.2, 8, 0, angle * i, 0],
+                PROPERTIES: {
+                    SHOOT_SETTINGS: combineStats([g.basic, g.tiny, g.tiny, g.small, g.doublereload, g.doublereload]),
+                    TYPE: exports.fallenOverlord_drone,
+                    AUTOFIRE: true,
+                    STAT_CALCULATOR: gunCalcNames.drone
+                }
+            })
+        }
+        return output
+    })(),
+    DISPLAY_NAME: true,
 }
 
 // MISC BOSSES
@@ -3950,6 +4019,71 @@ exports.ruler = {
                 TYPE: exports.ruler_revolvers
             }
         }],
+}
+
+// BASE DRONES
+
+exports.baseDrone = {
+    PARENT: [exports.drone],
+    ACCEPTS_SCORE: false,
+    DANGER: 2,
+    CONTROL_RANGE: 0,
+    SHAPE: 3,
+    MOTION_TYPE: "chase",
+    FACING_TYPE: "smoothToTarget",
+    CONTROLLERS: [
+        "nearestDifferentMaster",
+        "canRepel",
+        "mapTargetToGoal",
+        "hangOutNearMaster",
+    ],
+    AI: {
+        BLIND: true,
+    },
+    INDEPENDENT: true,
+    IGNORED_BY_AI: false,
+    BODY: {
+        ACCELERATION: 1.5,
+        PENETRATION: 1.5,
+        HEALTH: 300,
+        DAMAGE: 3.25,
+        SPEED: 6,
+        RESIST: 1.6,
+        RANGE: 10,
+        DENSITY: 12,
+        PUSHABILITY: 0.6,
+        FOV: 2,
+    },
+    AI: {
+        IGNORE_SHAPES: true,
+    },
+}
+
+exports.baseDroneSpawner = {
+    PARENT: [exports.overseer],
+    TYPE: '',
+    MAX_CHILDREN: 10,
+    LIKES_SHAPES: false,
+    LEVEL: 45,
+    SIZE: 12,
+    ARENA_CLOSER: true,
+    IGNORED_BY_AI: true,
+    ALPHA: 0,
+    HITS_OWN_TYPE: 'never',
+    LABEL: "Base Drone",
+    GUNS: [
+        {
+            POSITION: [6, 12, 1.2, 8, 0, 0, 0],
+            PROPERTIES: {
+                SHOOT_SETTINGS: combineStats([g.drone, g.over, g.doublereload, g.doublereload, g.tiny]),
+                TYPE: exports.baseDrone,
+                AUTOFIRE: true,
+                SYNCS_SKILLS: true,
+                STAT_CALCULATOR: gunCalcNames.drone,
+                WAIT_TO_CYCLE: true,
+            },
+        },
+    ],
 }
 
 // DOMINATORS
@@ -4431,10 +4565,10 @@ exports.gameModMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.tea
 exports.betaTesterMenu.UPGRADES_TIER_0 = [exports.tank, exports.levels, exports.teams];
 
 // MISCELLANEOUS
-exports.miscEntities.UPGRADES_TIER_0 = [exports.dominators, exports.bosses, exports.baseProtector, exports.mothership, exports.arenaCloser];
+exports.miscEntities.UPGRADES_TIER_0 = [exports.dominators, exports.bosses, exports.baseProtector, exports.mothership, exports.arenaCloser, exports.baseDroneSpawner];
 exports.dominators.UPGRADES_TIER_0 = [exports.dominator, exports.destroyerDominator, exports.gunnerDominator, exports.trapperDominator];
 exports.bosses.UPGRADES_TIER_0 = [exports.diepbosses, exports.miscbosses]
-exports.diepbosses.UPGRADES_TIER_0 = [exports.summoner, exports.defender, exports.guardianOfThePentagons, exports.fallenBooster]
+exports.diepbosses.UPGRADES_TIER_0 = [exports.summoner, exports.defender, exports.guardianOfThePentagons, exports.fallenBooster, exports.fallenOverlord]
 exports.miscbosses.UPGRADES_TIER_0 = [exports.omega_summoner, exports.alpha_defender, exports.ruler]
 
 // TANK UPGRADE PATHS

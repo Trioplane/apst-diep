@@ -296,10 +296,14 @@ const bossSelections = [{
     boss: Class.fallenBooster,
     location: ['norm', 'nest'],
     chance: 1,
+}, {
+    boss: Class.fallenOverlord,
+    location: ['norm', 'nest'],
+    chance: 1,
 }]
 
 let spawnBosses = (census) => {
-    if (!census.miniboss&& !timer--) {
+    if (!census.miniboss && !timer--) {
         timer--;
         // choose boss
         const selectedboss = bossSelections[ran.chooseChance(...bossSelections.map((selected) => selected.chance))]
@@ -356,7 +360,7 @@ let spawnCrasher = (census) => {
 for (let team = 1; team < c.TEAMS + 1; team++) {
     room["bap" + team].forEach((loc) => {
         let o = new Entity(loc);
-        o.define(Class.baseProtector);
+        o.define(Class.baseDroneSpawner);
         o.team = -team;
         o.color = [10, 11, 12, 15, 25, 26, 27, 28][team - 1];
     });

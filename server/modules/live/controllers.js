@@ -446,10 +446,10 @@ class io_nearestDifferentMaster extends IO {
         return {};
     }
 }
-class io_nearestDifferentMaster_ram extends IO {
+class io_nearestDifferentMaster_ignoreShape extends IO {
     constructor(body, opts = {}) {
         super(body);
-        this.accountForMovement = opts.accountForMovement ?? true;
+        this.accountForMovement = opts.accountForMovement || true;
         this.targetLock = undefined;
         this.tick = ran.irandom(30);
         this.lead = 0;
@@ -505,7 +505,7 @@ class io_nearestDifferentMaster_ram extends IO {
             range = this.body.fov;
         // Use whether we have functional guns to decide
         for (let i = 0; i < this.body.guns.length; i++) {
-            if (false) {
+            if (this.body.guns[i].canShoot && !this.body.aiSettings.SKYNET) {
                 let v = this.body.guns[i].getTracking();
                 if (v.speed == 0 || v.range == 0) continue;
                 tracking = v.speed;
@@ -551,11 +551,29 @@ class io_nearestDifferentMaster_ram extends IO {
         // }
         // Consider how fast it's moving and shoot at it
         if (this.targetLock != null) {
-           this.lead = 0;
+            let radial = this.targetLock.velocity;
+            let diff = {
+                x: this.targetLock.x - this.body.x,
+                y: this.targetLock.y - this.body.y,
+            }
+            /// Refresh lead time
+            if (this.tick % 4 === 0) {
+                this.lead = 0
+                // Find lead time (or don't)
+                if (!this.body.aiSettings.chase) {
+                    let toi = timeOfImpact(diff, radial, tracking)
+                    this.lead = toi
+                }
+            }
+            if (!Number.isFinite(this.lead)) {
+                this.lead = 0;
+            }
+            if (!this.accountForMovement) this.lead = 0;
+            // And return our aim
             return {
-                goal: {
-                    x: this.targetLock.x,
-                    y: this.targetLock.y,
+                target: {
+                    x: diff.x + this.lead * radial.x,
+                    y: diff.y + this.lead * radial.y,
                 },
                 fire: true,
                 main: true
@@ -619,6 +637,59 @@ class io_minion extends IO {
             let goal
             let power = 1
             let target = new Vector(input.target.x, input.target.y)
+            if (input.alt) {
+                // Leash
+                if (target.length < leash) {
+                    goal = {
+                        x: this.body.x + target.x,
+                        y: this.body.y + target.y,
+                    }
+                    // Spiral repel
+                } else if (target.length < repel) {
+                    let dir = -this.turnwise * target.direction + Math.PI / 5
+                    goal = {
+                        x: this.body.x + Math.cos(dir),
+                        y: this.body.y + Math.sin(dir),
+                    }
+                    // Free repel
+                } else {
+                    goal = {
+                        x: this.body.x - target.x,
+                        y: this.body.y - target.y,
+                    }
+                }
+            } else if (input.main) {
+                // Orbit point
+                let dir = this.turnwise * target.direction + 0.01
+                goal = {
+                    x: this.body.x + target.x - orbit * Math.cos(dir),
+                    y: this.body.y + target.y - orbit * Math.sin(dir),
+                }
+                if (Math.abs(target.length - orbit) < this.body.size * 2) {
+                    power = 0.7
+                }
+            }
+            return {
+                goal: goal,
+                power: power,
+            }
+        }
+    }
+}
+class io_minionIdle extends IO {
+    constructor(body) {
+        super(body)
+        this.turnwise = 1
+    }
+    think(input) {
+        if (input.target != null && (input.alt || input.main)) {
+            let sizeFactor = Math.sqrt(this.body.master.size / this.body.master.SIZE)
+            let leash = 82 * sizeFactor
+            let orbit = 140 * sizeFactor
+            let repel = 142 * sizeFactor
+            let goal
+            let power = 1
+            let target = new Vector(input.target.x + 2, input.target.y + 2)
             if (input.alt) {
                 // Leash
                 if (target.length < leash) {
@@ -842,7 +913,6 @@ let ioTypes = {
 
     //aiming related
     nearestDifferentMaster: io_nearestDifferentMaster,
-    nearestDifferentMaster_ram: io_nearestDifferentMaster_ram,
     targetSelf: io_targetSelf,
     onlyAcceptInArc: io_onlyAcceptInArc,
     spin: io_spin,
@@ -856,6 +926,7 @@ let ioTypes = {
     goToMasterTarget: io_goToMasterTarget,
     avoid: io_avoid,
     minion: io_minion,
+    minionIdle: io_minionIdle,
     hangOutNearMaster: io_hangOutNearMaster,
     fleeAtLowHealth: io_fleeAtLowHealth,
     wanderAroundMap: io_wanderAroundMap,

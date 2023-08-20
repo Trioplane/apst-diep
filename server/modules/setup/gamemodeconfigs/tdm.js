@@ -17,16 +17,20 @@ switch (teams) {
     break;
   case 2:
     // blue team
-    for (let i = 0; i < 15; i++) {
-      if (i == 7) room[i][0] = "bap1";
-      else room[i][0] = "bas1";
+    for (let i = 0; i < room.length; i++) {
+      room[i][0] = "bas1";
     }
+    room[4][0] = "bap1"
+    room[7][0] = "bap1"
+    room[11][0] = "bap1"
 
     // red team
-    for (let i = 0; i < 15; i++) {
-      if (i == 7) room[i][14] = "bap2";
-      else room[i][14] = "bas2";
+    for (let i = 0; i < room.length; i++) {
+      room[i][14] = "bas2";
     }
+    room[4][14] = "bap2"
+    room[7][14] = "bap2"
+    room[11][14] = "bap2"
     break;
 
   case 3:

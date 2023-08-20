@@ -1475,12 +1475,7 @@ class Entity extends EventEmitter {
             }
             if (c.TEAMS === 1) inEnemyBase = false;
             if (room.isIn("boss", loc) && this.team !== -100) inEnemyBase = true;
-            if (inEnemyBase && this.type == ("bullet" || 'swarm' || 'drone' || 'minion')) {
-                if (this.master.type != 'miniboss') {
-                    this.kill()
-                }
-            } else
-            if (inEnemyBase && !this.isArenaCloser && !this.master.isArenaCloser && this.type != 'miniboss') {
+            if (inEnemyBase && !this.isArenaCloser && !this.master.isArenaCloser && this.type != 'miniboss' && this.type != 'bossProjectile') {
                 this.kill();
             }
         }
